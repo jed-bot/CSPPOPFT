@@ -11,6 +11,9 @@ import { JwtService } from '@nestjs/jwt';
 import { ConflictException,NotFoundException} from '@nestjs/common';
 import { DeleteAdminDto } from 'src/admin_dto/delete.admin.dto';
 import { AdminStatusDto } from 'src/admin_dto/status.admin';
+import { UpdateOfficerStatus } from 'src/officeraccount_dto/update.officer.profile.dto';
+import{officeraccount} from 'src/entities/officeraccount.entity';
+import { OfficerAccountService } from 'src/service/officer.account.service';
 
 @Injectable()
  export class AdminService {
@@ -18,6 +21,7 @@ import { AdminStatusDto } from 'src/admin_dto/status.admin';
     @InjectRepository(administrator)
     private readonly adminRepo: Repository<administrator>,
     private readonly jwtService:JwtService,
+    private readonly officerAccountRepository: Repository<officeraccount>,
   ) {}
 
   async createAdmin(createAdminDto:CreateAdminDto):Promise<Partial<administrator>>{
@@ -152,6 +156,24 @@ import { AdminStatusDto } from 'src/admin_dto/status.admin';
       await this.adminRepo.save(admin);
       return{
         message:'Admin status updated successfully'
+      }
+    }
+
+    async updateOfficerStatus(updateOfficerStatus:UpdateOfficerStatus,user:any):Promise<{message:string}>{
+
+      if(user?.sub!=='admin'||'Administrator'){
+        throw new Error('Unauthorized access');
+      }
+      const officer = await this.officerAccountRepository.findOne({
+        where:{email:updateOfficerStatus.email}
+      })
+      if(!officer){
+        throw new Error('Officer with this email does not exsist');
+      }
+      officer.status = updateOfficerStatus.status;
+      await this.officerAccountRepository.save(officer);
+      return{
+        message:'Officer status updated successfully'
       }
     }
 }

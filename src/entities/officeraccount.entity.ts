@@ -20,7 +20,7 @@ export class officeraccount {
     @Column({ length: 100 })
     password: string;
 
-    @Column()
+    @Column({type: 'boolean', default: true})
     status: boolean;
 
     @ManyToOne(() => administrator, (administrator: administrator) => administrator.officers)
