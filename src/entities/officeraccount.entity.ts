@@ -3,7 +3,7 @@ import { administrator } from "./administrator.entity";
 import { officerprofile } from "./officerprofile.entity";
 
 
-@Entity('officeraccount')
+@Entity('officer_account')
 export class officeraccount {
     @PrimaryGeneratedColumn()
     id: number;
@@ -14,14 +14,14 @@ export class officeraccount {
     @Column({ length: 100 })
     email: string;
 
-    @Column({ length: 100 })
+    @Column({ length: 100})
     user_name: string;
 
     @Column({ length: 100 })
     password: string;
 
-    @Column({ length: 100 })
-    status: string;
+    @Column()
+    status: boolean;
 
     @ManyToOne(() => administrator, (administrator: administrator) => administrator.officers)
     @JoinColumn({ name: 'administrator_id' })

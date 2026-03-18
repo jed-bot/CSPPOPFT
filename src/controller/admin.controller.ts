@@ -4,6 +4,7 @@ import { CreateAdminDto } from 'src/admin_dto/create.admin.dto';
 import { LoginAdminDto } from 'src/admin_dto/login.admin.dto';
 import { ForgotPasswordDto } from 'src/admin_dto/fogot.admin.dto';
 import { DeleteAdminDto } from 'src/admin_dto/delete.admin.dto';
+import { AdminStatusDto } from 'src/admin_dto/status.admin';
 import { AuthGuard } from '@nestjs/passport';
 
 
@@ -43,6 +44,12 @@ export class AdminController{
         @Delete('auth/admin/delete')
         async deleteAdmin(@Request()req,@Body()dto:DeleteAdminDto){
             return this.adminService.deleteAdmin(dto,req.user)
+        }
+
+        @UseGuards(AuthGuard('jwt'))
+        @Put('auth/admin/update_status')
+        async updateAdminStatus(@Request()req,@Body()dto:AdminStatusDto){
+            return this.adminService.updateAdminStatus(dto,req.user)
         }
 
 }

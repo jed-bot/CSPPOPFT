@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, UnauthorizedException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {Repository, TreeRepository} from 'typeorm';
 import { administrator } from 'src/entities/administrator.entity';
@@ -8,8 +8,9 @@ import { ForgotPasswordDto } from 'src/admin_dto/fogot.admin.dto';
 import { JwtModule } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { ConflictException } from '@nestjs/common';
+import { ConflictException,NotFoundException} from '@nestjs/common';
 import { DeleteAdminDto } from 'src/admin_dto/delete.admin.dto';
+import { AdminStatusDto } from 'src/admin_dto/status.admin';
 
 @Injectable()
  export class AdminService {
@@ -41,29 +42,31 @@ import { DeleteAdminDto } from 'src/admin_dto/delete.admin.dto';
           department:createAdminDto.department,
           status:createAdminDto.status,
         });
+       
         const saveAdmin = await this.adminRepo.save(newAdmin);
-        console.log('Admin created successfully',saveAdmin.id);
+        
         const{password,...result} = saveAdmin;
+       
         return result;
     }catch(error){
     console.error('Error creating admin',error);
     throw error;
   }
+
   }
+
   async loginAdmin(loginAdminDto:LoginAdminDto):Promise<{message:string,bearer_token:string}>{
-    
-    try{
-      const admin = await this.adminRepo.findOne({
+      
+    const admin = await this.adminRepo.findOne({
         where:{
-          email:loginAdminDto.email,
+          email:loginAdminDto.email,  
         }
       });
-      if(!admin||!admin.password){
-        throw new Error('Invalid email or password');
+      if(!admin){
+        throw new NotFoundException('Invalid email or password');
       }
-      const matches =  await bcrypt.compare(loginAdminDto.password,admin.password);
-      if (!matches){
-        throw new Error('Invalid email or password');
+      if(!await bcrypt.compare(loginAdminDto.password,admin.password)){
+        throw new UnauthorizedException('Invalid credentials');
       }
       const payload = {sub:admin.id,email:admin.email,role:admin.role};
       const token  = this.jwtService.sign(payload);
@@ -72,11 +75,7 @@ import { DeleteAdminDto } from 'src/admin_dto/delete.admin.dto';
         message:'Login Successful',
         bearer_token:`${token}`
       }
-    }catch(error){
-      console.error('Error during admin Login',error);
-      throw error;
-
-    }
+  
     }
   async forgotPassword(forgotPasswordDto:ForgotPasswordDto,user:any):Promise<{message:string}>{
      const admin  = await this.adminRepo.findOne({
@@ -136,6 +135,24 @@ import { DeleteAdminDto } from 'src/admin_dto/delete.admin.dto';
         message:'Admin deleted successfully'
       }
     }
-
+    async updateAdminStatus(updateStatusDto:AdminStatusDto,user:any):Promise<{message:string}>{
+      const admin = await this.adminRepo.findOne({
+        where:{email:updateStatusDto.email}
+      });
+      if(!admin){
+        throw new Error('Admin with this email does not exsist');
+      }
+      if(user?.sub !== admin.id){
+        throw new Error('Unauthorizede to update status');
+      }
+      if(!await bcrypt.compare(updateStatusDto.password,admin.password)){
+        throw new Error('Wrong Credentials');
+      }
+      admin.status = updateStatusDto.status;
+      await this.adminRepo.save(admin);
+      return{
+        message:'Admin status updated successfully'
+      }
+    }
 }
   

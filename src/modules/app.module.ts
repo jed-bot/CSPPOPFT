@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminModule } from './admin.module';
 import * as path from 'path';
 import * as fs from 'fs';
+import { OfficerAccountModule } from './officer.account.module';
 
 @Module({
   imports: [
@@ -18,7 +19,6 @@ import * as fs from 'fs';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        console.log('\n🔧 TypeORM Factory Starting...');
         
         const host = configService.get<string>('DATABASE_HOST');
         const database = configService.get<string>('DATABASE_NAME');
@@ -54,6 +54,7 @@ import * as fs from 'fs';
       },
     }),
     AdminModule,
+    OfficerAccountModule,
   ],
   controllers: [AppController],
   providers: [AppService],
