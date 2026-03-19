@@ -7,6 +7,9 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import { LoginOfficerAccountDto } from "src/officer_account_dto/login.officer.account";
 import { NotFoundError } from "rxjs";
+import { CreateOfficerProfileDto } from "src/officer_profile_dto/create.officer.profile.dto";
+import { officerprofile } from "src/entities/officerprofile.entity";
+
 
 @Injectable()
 export class OfficerAccountService{
@@ -14,6 +17,8 @@ export class OfficerAccountService{
         @InjectRepository(officeraccount)
         private readonly officerAccountRepository: Repository<officeraccount>,
         private readonly jwtService:JwtService,
+        @InjectRepository(officerprofile)
+        private readonly officerProfileRepository:Repository<officerprofile>,
     ) {}
 
     async createOfficerAccount(createOfficerAccountDto:CreateOfficerAccountDto):Promise<Partial<officeraccount>>{
@@ -73,4 +78,28 @@ export class OfficerAccountService{
         return account;
     }
     
+    async createOfficerProfile(createOfficerProfileDto:CreateOfficerProfileDto,officerId:number,user:any):Promise<{message:string}>{
+        const account  = await this.officerAccountRepository.findOne({
+            where:{id:officerId}
+        })
+        if(!account){
+            throw new NotFoundException('Officer account not found');
+        }
+        return{
+            message:'Officer profile created successfully'
+        }
+    }
+    async getOfficerProfile(officerId:number,user:any):Promise<Partial<officerprofile>>{
+        if(user?.sub !== officerId){
+            throw new UnauthorizedException('Unauthorized access');
+        }
+        const profile = await this.officerProfileRepository.findOne({
+            where:{id:officerId},
+            select:['first_name','middle_name','last_name','gender','birth_date','office_unit']
+        })
+        if(!profile){
+            throw new NotFoundException('Officer profile not found');
+        }
+        return profile;
+    }
 }
