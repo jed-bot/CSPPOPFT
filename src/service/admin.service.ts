@@ -11,7 +11,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConflictException,NotFoundException} from '@nestjs/common';
 import { DeleteAdminDto } from 'src/admin_dto/delete.admin.dto';
 import { AdminStatusDto } from 'src/admin_dto/status.admin';
-import { UpdateOfficerStatus } from 'src/officeraccount_dto/update.officer.profile.dto';
+import { UpdateOfficerStatus } from 'src/officer_account_dto/update.officer.profile.dto';
 import{officeraccount} from 'src/entities/officeraccount.entity';
 import { OfficerAccountService } from 'src/service/officer.account.service';
 

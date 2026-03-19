@@ -6,7 +6,7 @@ import { ForgotPasswordDto } from 'src/admin_dto/fogot.admin.dto';
 import { DeleteAdminDto } from 'src/admin_dto/delete.admin.dto';
 import { AdminStatusDto } from 'src/admin_dto/status.admin';
 import { AuthGuard } from '@nestjs/passport';
-import { UpdateOfficerStatus } from 'src/officeraccount_dto/update.officer.profile.dto';
+import { UpdateOfficerStatus } from 'src/officer_account_dto/update.officer.profile.dto';
 
 
 @Controller()

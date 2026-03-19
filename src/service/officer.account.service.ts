@@ -1,11 +1,11 @@
-import { CreateOfficerAccountDto } from "src/officeraccount_dto/create.officer.account.dto";
+import { CreateOfficerAccountDto } from "src/officer_account_dto/create.officer.account.dto";
 import { InjectRepository } from '@nestjs/typeorm';
 import {Repository, TreeRepository} from 'typeorm';
 import { officeraccount } from "src/entities/officeraccount.entity";
 import { ConflictException, Injectable, UnauthorizedException,NotFoundException } from "@nestjs/common";
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
-import { LoginOfficerAccountDto } from "src/officeraccount_dto/login.officer.account";
+import { LoginOfficerAccountDto } from "src/officer_account_dto/login.officer.account";
 import { NotFoundError } from "rxjs";
 
 @Injectable()
