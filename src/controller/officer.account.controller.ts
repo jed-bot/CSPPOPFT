@@ -4,6 +4,7 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
 import { LoginOfficerAccountDto } from 'src/officer_account_dto/login.officer.account';
 import { CreateOfficerAccountDto } from 'src/officer_account_dto/create.officer.account.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateOfficerProfileDto } from 'src/officer_profile_dto/create.officer.profile.dto';
 
 @Controller()
 export class OfficerAccountController{
@@ -16,12 +17,23 @@ export class OfficerAccountController{
 
     @Post('auth/officer/login')
     async loginOfficerAccount(@Body()loginOfficerAccountDto:LoginOfficerAccountDto){
-        return this.officerAccountService.loginOfficerAccount(loginOfficerAccountDto)
+        return this.officerAccountService.loginOfficerAccount(loginOfficerAccountDto);
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Get('auth/officer/info')
     async getOfficerAccountInfo(@Request()req){
-        return this.officerAccountService.getOfficerAccountInfo(req.user.sub,req.user)
+        return this.officerAccountService.getOfficerAccountInfo(req.user.sub,req.user);
+    }
+    @UseGuards(AuthGuard('jwt'))
+    @Post('auth/officer/create_profile')
+    async createOfficerProfile(@Request()req,@Body()createOfficerProfileDto:CreateOfficerProfileDto){
+        return this.officerAccountService.createOfficerProfile(createOfficerProfileDto,req.user.sub,req.user);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('auth/officer/profile')
+    async getOfficerProfile(@Request()req){
+        return this.officerAccountService.getOfficerProfile(req.user.sub,req.user);
     }
 }

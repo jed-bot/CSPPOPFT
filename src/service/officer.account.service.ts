@@ -79,6 +79,9 @@ export class OfficerAccountService{
     }
     
     async createOfficerProfile(createOfficerProfileDto:CreateOfficerProfileDto,officerId:number,user:any):Promise<{message:string}>{
+        if(user?.sub !== officerId){
+            throw new UnauthorizedException('Unauthorized access');
+        }
         const account  = await this.officerAccountRepository.findOne({
             where:{id:officerId}
         })
