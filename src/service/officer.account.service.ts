@@ -33,7 +33,7 @@ export class OfficerAccountService{
             email:createOfficerAccountDto.email,
             password:hashedPassword,
             user_name:createOfficerAccountDto.user_name,
-            status:createOfficerAccountDto.status,
+            status:Boolean(createOfficerAccountDto.status),
             administrator_id:createOfficerAccountDto.administrator_id,
         });
         const saveAccoun = await this.officerAccountRepository.save(newAccount);

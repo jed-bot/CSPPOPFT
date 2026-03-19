@@ -1,6 +1,6 @@
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {Repository, TreeRepository} from 'typeorm';
+import {Not, Repository, TreeRepository} from 'typeorm';
 import { administrator } from 'src/entities/administrator.entity';
 import {CreateAdminDto} from 'src/admin_dto/create.admin.dto';
 import { LoginAdminDto } from 'src/admin_dto/login.admin.dto';
@@ -21,7 +21,8 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
     @InjectRepository(administrator)
     private readonly adminRepo: Repository<administrator>,
     private readonly jwtService:JwtService,
-    private readonly officerAccountRepository: Repository<officeraccount>,
+    @InjectRepository(officeraccount)
+    private officerAccountRepo: Repository<officeraccount>, 
   ) {}
 
   async createAdmin(createAdminDto:CreateAdminDto):Promise<Partial<administrator>>{
@@ -161,20 +162,44 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
 
     async updateOfficerStatus(updateOfficerStatus:UpdateOfficerStatus,user:any):Promise<{message:string}>{
 
-      if(user?.sub!=='admin'||'Administrator'){
-        throw new Error('Unauthorized access');
-      }
-      const officer = await this.officerAccountRepository.findOne({
+       if (user?.role !== 'admin' && user?.role !== 'Administrator') {
+        throw new Error(`Unauthorized access. User role: ${user?.role}`);
+    }
+      const officer = await this.officerAccountRepo.findOne({
         where:{email:updateOfficerStatus.email}
       })
       if(!officer){
         throw new Error('Officer with this email does not exsist');
       }
-      officer.status = updateOfficerStatus.status;
-      await this.officerAccountRepository.save(officer);
+      officer.status = Boolean(updateOfficerStatus.status);
+      await this.officerAccountRepo.save(officer);
       return{
         message:'Officer status updated successfully'
       }
     }
+
+    async getAllofficerAccount(user:any):Promise<officeraccount[]>{
+     if(!user){
+      throw new Error('Unauthorized access');
+     }
+
+     if (user?.role !== 'admin' && user?.role !== 'Administrator'){
+      throw new Error('Unauthorize access');
+     }
+      const adminId = user.sub;
+
+      const admin = await this.adminRepo.findOne({
+        where:{id:adminId}
+      });
+      if(!admin){
+        throw new NotFoundException('Admin does not exist');
+      }
+      const officers = await this.officerAccountRepo.find({
+        where:{administrator_id:adminId},
+        select:['id','email','user_name','status']
+      })
+      return officers;
+    }
+    
 }
   

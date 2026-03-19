@@ -6,6 +6,7 @@ import { ForgotPasswordDto } from 'src/admin_dto/fogot.admin.dto';
 import { DeleteAdminDto } from 'src/admin_dto/delete.admin.dto';
 import { AdminStatusDto } from 'src/admin_dto/status.admin';
 import { AuthGuard } from '@nestjs/passport';
+import { UpdateOfficerStatus } from 'src/officeraccount_dto/update.officer.profile.dto';
 
 
 @Controller()
@@ -35,7 +36,6 @@ export class AdminController{
         @UseGuards(AuthGuard('jwt'))
         @Put('auth/admin/forgot_password')
         async forgotPassword(@Request() req,@Body()dto:ForgotPasswordDto){
-            console.log(req.user);
             return this.adminService.forgotPassword(dto,req.user);
         }
 
@@ -48,8 +48,20 @@ export class AdminController{
 
         @UseGuards(AuthGuard('jwt'))
         @Put('auth/admin/update_status')
-        async updateAdminStatus(@Request()req,@Body()dto:AdminStatusDto){
-            return this.adminService.updateAdminStatus(dto,req.user)
+            async updateAdminStatus(@Request()req,@Body()dto:AdminStatusDto){
+                return this.adminService.updateAdminStatus(dto,req.user)
         }
+
+        @UseGuards(AuthGuard('jwt'))
+        @Put('auth/admin/update_officer_status')
+            async updateOfficerStatus(@Request()req,@Body()dto:UpdateOfficerStatus){
+                return this.adminService.updateOfficerStatus(dto,req.user)
+        }
+
+        @UseGuards(AuthGuard('jwt'))
+        @Get('auth/admin/officer_accounts')
+            async getAllOfficerAccount(@Param('id') id:number, @Request()req){
+                return this.adminService.getAllofficerAccount(req.user)
+            }
 
 }
