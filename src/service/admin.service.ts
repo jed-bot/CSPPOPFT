@@ -122,6 +122,19 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
       }
       return admin;
     }
+    async getAdminInfoById(id:number,user:any):Promise<Partial<administrator>>{
+      if(user?.sub !== id){
+        throw new UnauthorizedException('Unauthorized Access');
+      }
+      const admin = await this.adminRepo.findOne({
+        where:{id},
+        select:['id','email','user_name','department']
+      })
+      if(!admin){
+        throw new NotFoundException('Admin not Found')
+      }
+      return admin;
+    }
 
     async deleteAdmin(deleteAdminDto:DeleteAdminDto,user:any)
     {
@@ -234,13 +247,8 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
     }
 
     async getofficerAccountbyId(user:any,officerId:number):Promise<Partial<officeraccount>>{
-      const adminId = user.sub;
-
-      if(user?.sub !== adminId){
-        throw new UnauthorizedException ('Unauthorized access');
-      }
-      if(!adminId){
-        throw new NotFoundException('Admin does not exsist');
+      if(!user){
+        throw new UnauthorizedException('Are you sure you are a admin?');
       }
       if(user?.role !== 'admin' && user?.role !== 'Administrator'){
         throw new UnauthorizedException('Unauthorized Access');

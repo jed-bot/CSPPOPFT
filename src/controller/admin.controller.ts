@@ -22,7 +22,13 @@ export class AdminController{
         async getAdminInfo(@Request()req){
             return this.adminService.getAdmininfo(req.user.sub,req.user);
         }
-        
+
+        //get Admin by Id
+        @UseGuards(AuthGuard('jwt'))
+        @Get('auth/admin/info/:id')
+        async getAdminById(@Param('id',ParseIntPipe)id:number,@Request()req){
+            return this.adminService.getAdminInfoById(req.user,id)
+        }
         //route for creating admin
         @Post('auth/admin/signup')
             async createAdmin(@Body(new ValidationPipe()) createAdminDto: CreateAdminDto) {
@@ -46,29 +52,34 @@ export class AdminController{
         async deleteAdmin(@Request()req,@Body()dto:DeleteAdminDto){
             return this.adminService.deleteAdmin(dto,req.user)
         }
-
+        //update admin status
         @UseGuards(AuthGuard('jwt'))
         @Put('auth/admin/update_status')
             async updateAdminStatus(@Request()req,@Body()dto:AdminStatusDto){
                 return this.adminService.updateAdminStatus(dto,req.user)
         }
-
+        //update admin info 
         @UseGuards(AuthGuard('jwt'))
         @Put('auth/admin/update_info')
         async updateAdminInfo(@Request()req,@Body()dto:UpdateAdminInfoDto){
             return this.adminService.updateAdminInfo(dto,req.user)
         }
+        //update officer account status
         @UseGuards(AuthGuard('jwt'))
         @Put('auth/admin/update_officer_status')
             async updateOfficerStatus(@Request()req,@Body()dto:UpdateOfficerStatus){
                 return this.adminService.updateOfficerStatus(dto,req.user)
         }
-
+        //get all officer accounts
         @UseGuards(AuthGuard('jwt'))
         @Get('auth/admin/officer_accounts')
             async getAllOfficerAccount(@Param('id') id:number, @Request()req){
                 return this.adminService.getAllofficerAccount(req.user)
             }
-
-        
+        //get officer account by id
+        @UseGuards(AuthGuard('jwt'))
+        @Get('auth/admin/officer_account/:id')
+            async getOfficerAccountById(@Param('id',ParseIntPipe)id:number,@Request()req){
+                return this.adminService.getofficerAccountbyId(req.user,id)
+            }
 }
