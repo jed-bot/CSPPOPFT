@@ -1,6 +1,6 @@
 import {Injectable, UnauthorizedException} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {Not, Repository, TreeRepository} from 'typeorm';
+import {DeleteDateColumn, Not, Repository, TreeRepository} from 'typeorm';
 import { administrator } from 'src/entities/administrator.entity';
 import {CreateAdminDto} from 'src/admin_dto/create.admin.dto';
 import { LoginAdminDto } from 'src/admin_dto/login.admin.dto';
@@ -91,10 +91,10 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
       }
      });
      if(!admin){
-      throw new Error('Admin with this email does not exist');
+      throw new NotFoundException('Admin with this email does not exist');
      }
      if(user?.sub !==admin.id){
-      throw new Error('Unauthorized to reset password for this account');
+      throw new UnauthorizedException('Unauthorized to reset password for this account');
      }
      
      const saltRounds = 10;
@@ -111,31 +111,35 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
     async getAdmininfo(id:number,user:any):Promise<Partial<administrator>>{
 
       if(user?.sub !== id ){
-        throw new Error('Unauthorized to accces this account information');
+        throw new UnauthorizedException('Unauthorized to accces this account information');
       }
       const admin = await this.adminRepo.findOne({
         where:{id},
         select :['id','email','user_name','role','department','status']
       });
       if(!admin){
-        throw new Error('Admin with this account does not exsist');
+        throw new NotFoundException('Admin with this account does not exsist');
       }
       return admin;
     }
 
     async deleteAdmin(deleteAdminDto:DeleteAdminDto,user:any)
     {
+      const {email,password} = deleteAdminDto;
+      if (!email || !password){
+        throw new NotFoundException('Wrong Credentials');
+      }
       const admin = await this.adminRepo.findOne({
         where:{email:deleteAdminDto.email}
       })
       if(!admin){
-        throw new Error('Admin with this email does no exsist');
+        throw new NotFoundException('Admin with this email does not exsist');
       }
       if(user?.sub !==admin.id){
-        throw new Error('Unauthorized to delete this admin account');
+        throw new UnauthorizedException('Unauthorized to delete this admin account');
       }
       if(!await bcrypt.compare(deleteAdminDto.password,admin.password)){
-        throw new Error('Wrong Credentials');
+        throw new NotFoundException('Wrong Credentials');
       }
       await this.adminRepo.delete(admin.id);
       return{
@@ -147,13 +151,13 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
         where:{email:updateStatusDto.email}
       });
       if(!admin){
-        throw new Error('Admin with this email does not exsist');
+        throw new NotFoundException('Admin with this email does not exsist');
       }
       if(user?.sub !== admin.id){
-        throw new Error('Unauthorizede to update status');
+        throw new UnauthorizedException('Unauthorizede to update status');
       }
       if(!await bcrypt.compare(updateStatusDto.password,admin.password)){
-        throw new Error('Wrong Credentials');
+        throw new NotFoundException('Wrong Credentials');
       }
       admin.status = updateStatusDto.status;
       await this.adminRepo.save(admin);
@@ -192,13 +196,13 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
     async updateOfficerStatus(updateOfficerStatus:UpdateOfficerStatus,user:any):Promise<{message:string}>{
 
        if (user?.role !== 'admin' && user?.role !== 'Administrator') {
-        throw new Error(`Unauthorized access. User role: ${user?.role}`);
+        throw new UnauthorizedException(`Unauthorized access. User role: ${user?.role}`);
     }
       const officer = await this.officerAccountRepo.findOne({
         where:{email:updateOfficerStatus.email}
       })
       if(!officer){
-        throw new Error('Officer with this email does not exsist');
+        throw new NotFoundException('Officer with this email does not exsist');
       }
       officer.status = Boolean(updateOfficerStatus.status);
       await this.officerAccountRepo.save(officer);
@@ -209,11 +213,11 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
 
     async getAllofficerAccount(user:any):Promise<officeraccount[]>{
      if(!user){
-      throw new Error('Unauthorized access');
+      throw new UnauthorizedException('Unauthorized access');
      }
 
      if (user?.role !== 'admin' && user?.role !== 'Administrator'){
-      throw new Error('Unauthorize access');
+      throw new UnauthorizedException('Unauthorize access');
      }
       const adminId = user.sub;
 
@@ -234,13 +238,13 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
       const adminId = user.sub;
 
       if(user?.sub !== adminId){
-        throw new Error ('Unauthorized access');
+        throw new UnauthorizedException ('Unauthorized access');
       }
       if(!adminId){
         throw new NotFoundException('Admin does not exsist');
       }
       if(user?.role !== 'admin' && user?.role !== 'Administrator'){
-        throw new Error('Unauthorized Access');
+        throw new UnauthorizedException('Unauthorized Access');
       }
       const officerAccount = await this.officerAccountRepo.findOne({
         where:{id:officerId}
