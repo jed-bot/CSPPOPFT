@@ -228,7 +228,6 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
         throw new NotFoundException('Admin does not exist');
       }
       const officers = await this.officerAccountRepo.find({
-        where:{administrator_id:adminId},
         select:['id','email','user_name','status']
       })
       return officers;
