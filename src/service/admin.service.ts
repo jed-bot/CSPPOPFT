@@ -5,6 +5,7 @@ import { administrator } from 'src/entities/administrator.entity';
 import {CreateAdminDto} from 'src/admin_dto/create.admin.dto';
 import { LoginAdminDto } from 'src/admin_dto/login.admin.dto';
 import { ForgotPasswordDto } from 'src/admin_dto/fogot.admin.dto';
+import { UpdateAdminInfoDto } from 'src/admin_dto/update.admin.info';
 import { JwtModule } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -14,6 +15,7 @@ import { AdminStatusDto } from 'src/admin_dto/status.admin';
 import { UpdateOfficerStatus } from 'src/officer_account_dto/update.officer.profile.dto';
 import{officeraccount} from 'src/entities/officeraccount.entity';
 import { OfficerAccountService } from 'src/service/officer.account.service';
+
 
 @Injectable()
  export class AdminService {
@@ -54,7 +56,7 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
        
         return result;
     }catch(error){
-    console.error('Error creating admin',error);
+    
     throw error;
   }
 
@@ -160,6 +162,33 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
       }
     }
 
+    async updateAdminInfo(updateAdminInfoDto:UpdateAdminInfoDto,user:any):Promise<{message:string}>{
+      const admin = await this.adminRepo.findOne({
+        where:{id:user.sub}
+      })
+
+      if(!admin){
+        throw new NotFoundException('Admin does not exsist');
+      }
+
+      if(user?.sub !== admin.id){
+        throw new UnauthorizedException('Unauthorized access');
+      }
+      const emailExists = await this.adminRepo.findOne({
+          where:{email:updateAdminInfoDto.email}
+        })
+      if(emailExists){
+        throw new ConflictException('This is email is already used by another user');
+      }
+      
+      Object.assign(admin,updateAdminInfoDto);
+      await this.adminRepo.save(admin);
+
+      return{
+        message:"Admin information updated successfully"
+      }
+      
+    }
     async updateOfficerStatus(updateOfficerStatus:UpdateOfficerStatus,user:any):Promise<{message:string}>{
 
        if (user?.role !== 'admin' && user?.role !== 'Administrator') {
@@ -200,6 +229,26 @@ import { OfficerAccountService } from 'src/service/officer.account.service';
       })
       return officers;
     }
-    
+
+    async getofficerAccountbyId(user:any,officerId:number):Promise<Partial<officeraccount>>{
+      const adminId = user.sub;
+
+      if(user?.sub !== adminId){
+        throw new Error ('Unauthorized access');
+      }
+      if(!adminId){
+        throw new NotFoundException('Admin does not exsist');
+      }
+      if(user?.role !== 'admin' && user?.role !== 'Administrator'){
+        throw new Error('Unauthorized Access');
+      }
+      const officerAccount = await this.officerAccountRepo.findOne({
+        where:{id:officerId}
+      })
+      if(!officerAccount){
+        throw new NotFoundException('Officer Account does not exsist');
+      }
+      return officerAccount;
+    }
 }
   

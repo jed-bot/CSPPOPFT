@@ -8,6 +8,6 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller()
 export class OfficerProfileController{
     constructor(private readonly officerAccountService: OfficerAccountService){}
-
+    
     
 }

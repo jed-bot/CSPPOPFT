@@ -5,6 +5,7 @@ import { LoginOfficerAccountDto } from 'src/officer_account_dto/login.officer.ac
 import { CreateOfficerAccountDto } from 'src/officer_account_dto/create.officer.account.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateOfficerProfileDto } from 'src/officer_profile_dto/create.officer.profile.dto';
+import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.profile.dto';
 
 @Controller()
 export class OfficerAccountController{
@@ -35,5 +36,11 @@ export class OfficerAccountController{
     @Get('auth/officer/profile')
     async getOfficerProfile(@Request()req){
         return this.officerAccountService.getOfficerProfile(req.user.sub,req.user);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Put('auth/officer/update_profile')
+    async udpateOfficerProfile(@Request()req, @Body()UpdateOfficerProfileDto:UpdateOfficerProfileDto){
+        return this.officerAccountService.UpdateOfficerProfile(req.user.sub,UpdateOfficerProfileDto,req.user);
     }
 }

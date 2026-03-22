@@ -6,7 +6,7 @@ export class AppService {
   constructor(private dataSource: DataSource){}
 
   getHello(): string {
-    return 'Hello World!';
+    return 'Welcome to the Police Physical Fitness Test Backend';
   }
 
   async testDatabaseConnection(){

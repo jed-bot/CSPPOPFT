@@ -8,6 +8,7 @@ import { ConflictException,NotFoundException} from '@nestjs/common';
 import { CreateOfficerProfileDto } from 'src/officer_profile_dto/create.officer.profile.dto';
 import {officerprofile} from 'src/entities/officerprofile.entity';
 import {OfficerAccountService} from 'src/service/officer.account.service';
+import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.profile.dto';
 
 
 @Injectable()
@@ -19,5 +20,6 @@ export class OfficerProfileService{
         private readonly officerAccountService: OfficerAccountService,
     ){}
 
+    
 
 }

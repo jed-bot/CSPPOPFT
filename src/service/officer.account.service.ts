@@ -9,6 +9,7 @@ import { LoginOfficerAccountDto } from "src/officer_account_dto/login.officer.ac
 import { NotFoundError } from "rxjs";
 import { CreateOfficerProfileDto } from "src/officer_profile_dto/create.officer.profile.dto";
 import { officerprofile } from "src/entities/officerprofile.entity";
+import { UpdateOfficerProfileDto } from "src/officer_profile_dto/update.officer.profile.dto";
 
 
 @Injectable()
@@ -105,4 +106,26 @@ export class OfficerAccountService{
         }
         return profile;
     }
+    async UpdateOfficerProfile(officerId:number,updateOfficerProfileDto:UpdateOfficerProfileDto,user:any):Promise<{message:string}>{
+        const profile = await this.officerProfileRepository.findOne({
+            where:{id:officerId}
+        })
+        if(user?.sub !== officerId){
+            throw new UnauthorizedException('Unauthorized access');
+        }
+        if(!profile){
+            throw new NotFoundException('Officer account is not found');
+        }
+        Object.assign(profile,{
+            first_name:updateOfficerProfileDto.newfirst_name,
+            middle_name:updateOfficerProfileDto.newmiddle_name,
+            last_name:updateOfficerProfileDto.newlast_name,
+            office_unit:updateOfficerProfileDto.newoffice_unit
+        })
+        await this.officerProfileRepository.save(profile);
+
+        return{
+            message:'Updated officer profile successfully'
+        }
+    }    
 }

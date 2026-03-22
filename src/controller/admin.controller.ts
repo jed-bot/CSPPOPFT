@@ -7,6 +7,7 @@ import { DeleteAdminDto } from 'src/admin_dto/delete.admin.dto';
 import { AdminStatusDto } from 'src/admin_dto/status.admin';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateOfficerStatus } from 'src/officer_account_dto/update.officer.profile.dto';
+import { UpdateAdminInfoDto } from 'src/admin_dto/update.admin.info';
 
 
 @Controller()
@@ -53,6 +54,11 @@ export class AdminController{
         }
 
         @UseGuards(AuthGuard('jwt'))
+        @Put('auth/admin/update_info')
+        async updateAdminInfo(@Request()req,@Body()dto:UpdateAdminInfoDto){
+            return this.adminService.updateAdminInfo(dto,req.user)
+        }
+        @UseGuards(AuthGuard('jwt'))
         @Put('auth/admin/update_officer_status')
             async updateOfficerStatus(@Request()req,@Body()dto:UpdateOfficerStatus){
                 return this.adminService.updateOfficerStatus(dto,req.user)
@@ -64,4 +70,5 @@ export class AdminController{
                 return this.adminService.getAllofficerAccount(req.user)
             }
 
+        
 }
