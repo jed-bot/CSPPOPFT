@@ -162,27 +162,44 @@ export class OfficerAccountService{
             message:'Updated officer profile successfully'
         }
     } 
-    async deleteOfficerProfile(deleteOfficerProfileDto:DeleteOfficerProfileDto,officerId:number,user:any):Promise<{message:string}>{
-        const{email,password} = deleteOfficerProfileDto;
-        const account = await this.officerAccountRepository.findOne({
-            where:{id:officerId}
-        })
+    async deleteOfficerProfile(
+    deleteOfficerProfileDto: DeleteOfficerProfileDto,
+    officerId: number,
+    user: any
+): Promise<{message: string}> {
+    const {email, password} = deleteOfficerProfileDto;
+    
+    // Verify account exists
+    const account = await this.officerAccountRepository.findOne({
+        where: {id: officerId}
+    });
 
-        if(!email||!password){
-            throw new NotFoundException('Wrong credentials');
-        }
-
-        if(!account){
-            throw new NotFoundException('Officer account not found');
-        }
-        if (user?.sub !== officerId){
-            throw new UnauthorizedException('Unauthorized access');
-        }
-        await this.officerProfileRepository.delete({id:officerId})
-        return{
-            message:'Officer profile deleted successfully'
-        }
+    if(!email || !password) {
+        throw new NotFoundException('Wrong credentials');
     }
+
+    if(!account) {
+        throw new NotFoundException('Officer account not found');
+    }
+    
+    if (user?.sub !== officerId) {
+        throw new UnauthorizedException('Unauthorized access');
+    }
+    
+    // Delete using the correct foreign key field
+    const deleteResult = await this.officerProfileRepository.delete({
+        officer_account_id: officerId  // ← THIS IS THE FIX
+    });
+    
+    // Optional: Check if profile was actually deleted
+    if (deleteResult.affected === 0) {
+        throw new NotFoundException('Officer profile not found');
+    }
+    
+    return {
+        message: 'Officer profile deleted successfully'
+    }
+}
 
    
 }
