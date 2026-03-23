@@ -30,8 +30,8 @@ export class OfficerAccountController{
     }
     @UseGuards(AuthGuard('jwt'))
     @Delete('auth/officer/delete_account')
-    asyncdeleteOfficerAccount(@Request()req,@Body()DeleteOfficerProfileDto:DeleteOfficerProfileDto){
-        return this.officerAccountService.deleteOfficerAccount(DeleteOfficerProfileDto,req.user.sub,req.user);
+    asyncdeleteOfficerAccount(@Request()req,@Body()DeleteOfficerAccountDto:DeleteOfficerAccountDto){
+        return this.officerAccountService.deleteOfficerAccount(DeleteOfficerAccountDto,req.user.sub,req.user);
     }
     @UseGuards(AuthGuard('jwt'))
     @Post('auth/officer/create_profile')
@@ -53,7 +53,7 @@ export class OfficerAccountController{
 
     @UseGuards(AuthGuard('jwt'))
     @Delete('auth/officer/delete_profile')
-    async DeleteOfficerProfileDto(@Request()req,@Body(DeleteOfficerProfileDto)DeleteOfficerProfileDto){
+    async DeleteOfficerProfileDto(@Request()req,@Body()DeleteOfficerProfileDto:DeleteOfficerProfileDto){
         return this.officerAccountService.deleteOfficerProfile(DeleteOfficerProfileDto,req.user.sub,req.user)
     }
 }
