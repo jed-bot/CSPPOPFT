@@ -29,7 +29,7 @@ export class OfficerAccountController{
     @UseGuards(AuthGuard('jwt'))
     @Post('auth/officer/create_profile')
     async createOfficerProfile(@Request()req,@Body()createOfficerProfileDto:CreateOfficerProfileDto){
-        return this.officerAccountService.createOfficerProfile(createOfficerProfileDto,req.user.sub,req.user);
+        return this.officerAccountService.createofficerProfile(createOfficerProfileDto,req.user.sub,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))

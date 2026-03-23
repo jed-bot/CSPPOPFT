@@ -5,13 +5,13 @@ import { officer300msprint } from "./officer300msprint.entity";
 import { officersitup1min } from "./officersitup1min.entity";
 import { officerbmi } from "./officerbmi.entity";
 
-@Entity('officerprofile')
+@Entity('officer_profile')
 export class officerprofile {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    officeraccount_id: number;
+    officer_account_id: number;
 
     @Column({ length: 100 })
     first_name: string;
@@ -26,16 +26,16 @@ export class officerprofile {
     age: number;
 
     @Column({ length: 100 })
-    gender: string;
+    sex: string;
 
     @Column({ length: 100 })
-    birth_date: string;
+    birthday: string;
 
     @Column({ length: 100 })
     office_unit: string;
 
     @OneToOne(() => officeraccount, (acct: officeraccount) => acct.profile)
-    @JoinColumn({ name: 'officeraccount_id' })
+    @JoinColumn({ name: 'officer_account_id' })
     officeraccount: officeraccount;
 
     @OneToOne(() => officer1minpushup, (pushup: officer1minpushup) => pushup.officerprofile)

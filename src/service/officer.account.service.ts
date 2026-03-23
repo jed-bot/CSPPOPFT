@@ -79,19 +79,30 @@ export class OfficerAccountService{
         return account;
     }
     
-    async createOfficerProfile(createOfficerProfileDto:CreateOfficerProfileDto,officerId:number,user:any):Promise<{message:string}>{
+    async createofficerProfile(createOfficerProfileDto:CreateOfficerProfileDto,officerId:number,user:any):Promise<Partial<officerprofile>>{
         if(user?.sub !== officerId){
-            throw new UnauthorizedException('Unauthorized access');
+            throw new UnauthorizedException('Unathorized access');
         }
-        const account  = await this.officerAccountRepository.findOne({
+        
+        const newProfile = this.officerProfileRepository.create({
+            first_name:createOfficerProfileDto.first_name,
+            middle_name:createOfficerProfileDto.middle_name,
+            last_name:createOfficerProfileDto.last_name,
+            sex:createOfficerProfileDto.sex,
+            birthday:createOfficerProfileDto.birthday,
+            office_unit:createOfficerProfileDto.office_unit,
+        })
+
+        const ExistingProfile = await this.officerProfileRepository.findOne({
             where:{id:officerId}
         })
-        if(!account){
-            throw new NotFoundException('Officer account not found');
+        if(ExistingProfile){
+            throw new ConflictException('Officer profile already exists');
         }
-        return{
-            message:'Officer profile created successfully'
-        }
+        const saveProfile = await this.officerProfileRepository.save(newProfile);
+        return saveProfile;
+        
+        
     }
     async getOfficerProfile(officerId:number,user:any):Promise<Partial<officerprofile>>{
         if(user?.sub !== officerId){
@@ -99,7 +110,7 @@ export class OfficerAccountService{
         }
         const profile = await this.officerProfileRepository.findOne({
             where:{id:officerId},
-            select:['first_name','middle_name','last_name','gender','birth_date','office_unit']
+            select:['first_name','middle_name','last_name','sex','birthday','office_unit']
         })
         if(!profile){
             throw new NotFoundException('Officer profile not found');

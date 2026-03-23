@@ -4,6 +4,6 @@ export class CreateOfficerProfileDto{
     middle_name:string;
     age:number;
     sex:string;
-    birth_date:string;
+    birthday:string;
     office_unit:string;
 }
