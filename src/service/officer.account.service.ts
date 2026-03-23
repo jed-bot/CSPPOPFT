@@ -1,6 +1,6 @@
 import { CreateOfficerAccountDto } from "src/officer_account_dto/create.officer.account.dto";
 import { InjectRepository } from '@nestjs/typeorm';
-import {Repository, TreeRepository} from 'typeorm';
+import {Not, Repository, TreeRepository} from 'typeorm';
 import { officeraccount } from "src/entities/officeraccount.entity";
 import { ConflictException, Injectable, UnauthorizedException,NotFoundException } from "@nestjs/common";
 import * as bcrypt from 'bcrypt';
@@ -10,7 +10,7 @@ import { NotFoundError } from "rxjs";
 import { CreateOfficerProfileDto } from "src/officer_profile_dto/create.officer.profile.dto";
 import { officerprofile } from "src/entities/officerprofile.entity";
 import { UpdateOfficerProfileDto } from "src/officer_profile_dto/update.officer.profile.dto";
-
+import { DeleteOfficerProfileDto } from "src/officer_profile_dto/delete.officer.profile.dto";
 
 @Injectable()
 export class OfficerAccountService{
@@ -83,26 +83,48 @@ export class OfficerAccountService{
         if(user?.sub !== officerId){
             throw new UnauthorizedException('Unathorized access');
         }
+        const ExistingProfile = await this.officerProfileRepository.findOne({
+            where:{officer_account_id:officerId}
+        })
+        if(ExistingProfile){
+            throw new ConflictException('Officer profile already exists');
+        }
         
         const newProfile = this.officerProfileRepository.create({
+            officer_account_id:officerId,
             first_name:createOfficerProfileDto.first_name,
             middle_name:createOfficerProfileDto.middle_name,
             last_name:createOfficerProfileDto.last_name,
+            age:createOfficerProfileDto.age,
             sex:createOfficerProfileDto.sex,
             birthday:createOfficerProfileDto.birthday,
             office_unit:createOfficerProfileDto.office_unit,
         })
 
-        const ExistingProfile = await this.officerProfileRepository.findOne({
-            where:{id:officerId}
-        })
-        if(ExistingProfile){
-            throw new ConflictException('Officer profile already exists');
-        }
         const saveProfile = await this.officerProfileRepository.save(newProfile);
         return saveProfile;
         
         
+    }
+    async deleteOfficerAccount(deleteOfficerProfileDto:DeleteOfficerProfileDto,officerId:number,user:any):Promise<{message:string}>{
+        const {email,password} = deleteOfficerProfileDto;
+        const account = await this.officerAccountRepository.findOne({
+            where:{id:officerId}
+        })
+
+        if(!account){
+            throw new NotFoundException('Officer account not found')
+        }
+        if(!email || !password){
+            throw new NotFoundException('Wrong credentials');
+        }
+        if(user?.sub !== officerId){
+            throw new UnauthorizedException('Unauthorized access');
+        }
+        await this.officerAccountRepository.delete({id:officerId});
+        return {
+            message:'Officer account deleted successfully'
+        }
     }
     async getOfficerProfile(officerId:number,user:any):Promise<Partial<officerprofile>>{
         if(user?.sub !== officerId){
@@ -139,4 +161,6 @@ export class OfficerAccountService{
             message:'Updated officer profile successfully'
         }
     }    
+
+   
 }

@@ -1,4 +1,4 @@
-import {Controller,Get,Post,Body,UseGuards,Put,Request} from '@nestjs/common';
+import {Controller,Get,Post,Body,UseGuards,Put,Request,Delete} from '@nestjs/common';
 import { OfficerAccountModule} from 'src/modules/officer.account.module';
 import { OfficerAccountService } from 'src/service/officer.account.service';
 import { LoginOfficerAccountDto } from 'src/officer_account_dto/login.officer.account';
@@ -6,6 +6,7 @@ import { CreateOfficerAccountDto } from 'src/officer_account_dto/create.officer.
 import { AuthGuard } from '@nestjs/passport';
 import { CreateOfficerProfileDto } from 'src/officer_profile_dto/create.officer.profile.dto';
 import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.profile.dto';
+import { DeleteOfficerProfileDto } from 'src/officer_profile_dto/delete.officer.profile.dto';
 
 @Controller()
 export class OfficerAccountController{
@@ -25,6 +26,11 @@ export class OfficerAccountController{
     @Get('auth/officer/info')
     async getOfficerAccountInfo(@Request()req){
         return this.officerAccountService.getOfficerAccountInfo(req.user.sub,req.user);
+    }
+    @UseGuards(AuthGuard('jwt'))
+    @Delete('auth/officer/delete_account')
+    asyncdeleteOfficerAccount(@Request()req,@Body()DeleteOfficerProfileDto:DeleteOfficerProfileDto){
+        return this.officerAccountService.deleteOfficerAccount(DeleteOfficerProfileDto,req.user.sub,req.user);
     }
     @UseGuards(AuthGuard('jwt'))
     @Post('auth/officer/create_profile')
