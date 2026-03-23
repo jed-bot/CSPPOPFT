@@ -7,6 +7,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { CreateOfficerProfileDto } from 'src/officer_profile_dto/create.officer.profile.dto';
 import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.profile.dto';
 import { DeleteOfficerProfileDto } from 'src/officer_profile_dto/delete.officer.profile.dto';
+import { DeleteOfficerAccountDto } from 'src/officer_account_dto/delete.officer.account.dto';
 
 @Controller()
 export class OfficerAccountController{
@@ -48,5 +49,11 @@ export class OfficerAccountController{
     @Put('auth/officer/update_profile')
     async udpateOfficerProfile(@Request()req, @Body()UpdateOfficerProfileDto:UpdateOfficerProfileDto){
         return this.officerAccountService.UpdateOfficerProfile(req.user.sub,UpdateOfficerProfileDto,req.user);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Delete('auth/officer/delete_profile')
+    async DeleteOfficerProfileDto(@Request()req,@Body(DeleteOfficerProfileDto)DeleteOfficerProfileDto){
+        return this.officerAccountService.deleteOfficerProfile(DeleteOfficerProfileDto,req.user.sub,req.user)
     }
 }

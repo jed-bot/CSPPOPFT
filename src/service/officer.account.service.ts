@@ -11,6 +11,7 @@ import { CreateOfficerProfileDto } from "src/officer_profile_dto/create.officer.
 import { officerprofile } from "src/entities/officerprofile.entity";
 import { UpdateOfficerProfileDto } from "src/officer_profile_dto/update.officer.profile.dto";
 import { DeleteOfficerProfileDto } from "src/officer_profile_dto/delete.officer.profile.dto";
+import { DeleteOfficerAccountDto } from "src/officer_account_dto/delete.officer.account.dto";
 
 @Injectable()
 export class OfficerAccountService{
@@ -160,7 +161,28 @@ export class OfficerAccountService{
         return{
             message:'Updated officer profile successfully'
         }
-    }    
+    } 
+    async deleteOfficerProfile(deleteOfficerProfileDto:DeleteOfficerProfileDto,officerId:number,user:any):Promise<{message:string}>{
+        const{email,password} = deleteOfficerProfileDto;
+        const account = await this.officerAccountRepository.findOne({
+            where:{id:officerId}
+        })
+
+        if(!email||!password){
+            throw new NotFoundException('Wrong credentials');
+        }
+
+        if(!account){
+            throw new NotFoundException('Officer account not found');
+        }
+        if (user?.sub !== officerId){
+            throw new UnauthorizedException('Unauthorized access');
+        }
+        await this.officerProfileRepository.delete({id:officerId})
+        return{
+            message:'Officer profile deleted successfully'
+        }
+    }
 
    
 }
