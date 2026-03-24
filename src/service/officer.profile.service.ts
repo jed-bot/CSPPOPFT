@@ -28,30 +28,45 @@ export class OfficerProfileService{
     ){}
 
 
-    async createOfficerbmi(createOfficerBmiDto:CreateOfficerBmiDto,profileId:number,user:any):Promise<{message:string}>{
-        const account  = await this.officerProfileRepository.findOne({
-            where:{id:profileId}
-        })
-
-        if(user?.sub !==profileId){
-            throw new UnauthorizedException('Unauthorized Access')
-        }
-        if(!profileId){
-            throw new NotFoundException('Your profile was not found')
-        }
-
-        const createBmi = this.officerBmiRepository.create({
-            officer_profile_id:profileId,
-            height_meter:createOfficerBmiDto.height_meter,
-            weight_kg:createOfficerBmiDto.weight_kg,
-            month_taken:createOfficerBmiDto.month_taken
-          });
-          
-        await this.officerBmiRepository.save(createBmi)
-          return {
-            message: 'Added the Bmi Successfully'
-          }
-        }
+  async createOfficerbmi(
+    createOfficerBmiDto: CreateOfficerBmiDto,
+    accountId: number,  // This is the account ID from req.user.sub
+    user: any
+): Promise<{ message: string }> {
+    
+    // Check authorization
+    if (user?.sub !== accountId) {
+        throw new UnauthorizedException('Unauthorized access');
+    }
+    
+    // Find the profile using the account ID
+    const profile = await this.officerProfileRepository.findOne({
+        where: { officer_account_id: accountId }
+    });
+    
+    if (!profile) {
+        throw new NotFoundException(`Profile not found for account ID ${accountId}. Please create a profile first.`);
+    }
+    
+    // Get the actual profile ID
+    const profileId = profile.id;
+    
+    // Create BMI record - only provide height, weight, and month_taken
+    // Let the database calculate BMI and category automatically
+    const createBmi = this.officerBmiRepository.create({
+        officer_profile_id: profileId,  // Use the actual profile ID
+        height_meter: createOfficerBmiDto.height_meter,
+        weight_kg: createOfficerBmiDto.weight_kg,
+        month_taken: createOfficerBmiDto.month_taken,
+        // Don't include bmi and category - let database handle it
+    });
+    
+    await this.officerBmiRepository.save(createBmi);
+    
+    return {
+        message: 'Added the BMI Successfully'
+    };
+}
     }
 
  

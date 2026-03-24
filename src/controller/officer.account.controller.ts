@@ -10,10 +10,16 @@ import { DeleteOfficerProfileDto } from 'src/officer_profile_dto/delete.officer.
 import { DeleteOfficerAccountDto } from 'src/officer_account_dto/delete.officer.account.dto';
 import { UpdateOfficerAccountInfoDto } from 'src/officer_account_dto/update.officer.account.info';
 import { ForgotOfficerAccountDto } from 'src/officer_account_dto/forgot.officer.account';
+import { CreateOfficerBmiDto } from 'src/officer_bmi_dto/create.officer.bmi.dto';
+import { OfficerProfileService } from 'src/service/officer.profile.service';
 
 @Controller()
 export class OfficerAccountController{
-    constructor(private readonly officerAccountService: OfficerAccountService){}
+    constructor(
+        private readonly officerAccountService: OfficerAccountService,
+        private readonly officerProfileService:OfficerProfileService
+    )
+    {}
 
     @Post('auth/officer/signup')
     async createOfficerAccount(@Body()createOfficerAccountDto:CreateOfficerAccountDto){
@@ -68,4 +74,17 @@ export class OfficerAccountController{
     async DeleteOfficerProfileDto(@Request()req,@Body()DeleteOfficerProfileDto:DeleteOfficerProfileDto){
         return this.officerAccountService.deleteOfficerProfile(DeleteOfficerProfileDto,req.user.sub,req.user)
     }
+    @UseGuards(AuthGuard('jwt'))
+    @Post('auth/officer/create_bmi')
+    async createOfficerBmi(@Request()req,@Body()createdOfficerBmiDto:CreateOfficerBmiDto){
+        return this.officerProfileService.createOfficerbmi(createdOfficerBmiDto,req.user.sub,req.user)
+    }
+    @UseGuards(AuthGuard('jwt'))
+@Get('auth/decode-token')
+async decodeToken(@Request() req) {
+    return {
+        user: req.user,
+        message: 'Use this ID to create BMI records'
+    };
+}
 }

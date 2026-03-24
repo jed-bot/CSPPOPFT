@@ -2,13 +2,13 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "ty
 import { officerprofile } from "./officerprofile.entity";
 
 
-@Entity('officerbmi')
+@Entity('officer_bmi')
 export class officerbmi {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    officerprofile_id: number;
+    officer_profile_id: number;
 
     @Column()
     height_meter: number;
@@ -25,13 +25,13 @@ export class officerbmi {
     @Column({ length: 100 })
     month_taken: string;
 
-    @Column({ length: 100 })
-    gender: string;
+    //@Column({ length: 100 })
+    //gender: string;
 
-    @Column()
-    age: number;
+    //@Column()
+    //age: number;
 
     @OneToOne(() => officerprofile, (officer: officerprofile) => officer.officerbmi)
-    @JoinColumn({ name: 'officerprofile_id' })
+    @JoinColumn({ name: 'officer_profile_id' })
     officerprofile: officerprofile;
 }

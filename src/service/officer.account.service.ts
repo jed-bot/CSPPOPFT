@@ -15,6 +15,7 @@ import { DeleteOfficerAccountDto } from "src/officer_account_dto/delete.officer.
 import { ForgotOfficerAccountDto } from "src/officer_account_dto/forgot.officer.account";
 import { UpdateOfficerAccountInfoDto } from "src/officer_account_dto/update.officer.account.info";
 import { IsEmail } from "class-validator";
+import { CreateOfficerBmiDto } from "src/officer_bmi_dto/create.officer.bmi.dto";
 
 @Injectable()
 export class OfficerAccountService{
@@ -202,7 +203,7 @@ export class OfficerAccountService{
             throw new UnauthorizedException('Unauthorized access');
         }
         const profile = await this.officerProfileRepository.findOne({
-            where:{id:officerId},
+            where:{officer_account_id: officerId },
             select:['first_name','middle_name','last_name','sex','birthday','office_unit']
         })
         if(!profile){
@@ -253,12 +254,12 @@ export class OfficerAccountService{
         throw new UnauthorizedException('Unauthorized access');
     }
     
-    // Delete using the correct foreign key field
+
     const deleteResult = await this.officerProfileRepository.delete({
-        officer_account_id: officerId  // ← THIS IS THE FIX
+        officer_account_id: officerId  
     });
     
-    // Optional: Check if profile was actually deleted
+
     if (deleteResult.affected === 0) {
         throw new NotFoundException('Officer profile not found');
     }
@@ -267,6 +268,8 @@ export class OfficerAccountService{
         message: 'Officer profile deleted successfully'
     }
 }
+
+
 
    
 }

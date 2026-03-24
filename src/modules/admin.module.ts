@@ -10,17 +10,19 @@ import { JwtStrategy } from "src/auth/jwt.strategy";
 import { OfficerAccountService } from "src/service/officer.account.service";
 import { OfficerAccountController } from "src/controller/officer.account.controller";
 import { officeraccount } from "src/entities/officeraccount.entity";
+import { OfficerProfileService } from "src/service/officer.profile.service";
 import { OfficerProfileController } from "src/controller/officer.profile.controller";
 import { officerprofile } from "src/entities/officerprofile.entity";
+import { officerbmi } from "src/entities/officerbmi.entity";
+import { AuthModule } from "src/auth/auth.module";
 
 @Module({
 
     imports:[
         ConfigModule.forRoot({isGlobal:true}),
-        TypeOrmModule.forFeature([administrator,officeraccount,officerprofile]),
-        PassportModule.register({defaultStrategy:'jwt'}),
+        TypeOrmModule.forFeature([administrator,officeraccount,officerprofile,officerbmi]),
         JwtModule.register({
-            secret: process.env.JWT_SECRET,
+            secret:process.env.JWT_SECRET,
             signOptions:{expiresIn:'1h'},
         })
     ],
@@ -32,6 +34,7 @@ import { officerprofile } from "src/entities/officerprofile.entity";
     providers:[
         AdminService,
         OfficerAccountService,
+        OfficerProfileService,
         JwtStrategy
     ],
 })
