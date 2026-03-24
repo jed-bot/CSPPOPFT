@@ -12,6 +12,9 @@ import { officerprofile } from "src/entities/officerprofile.entity";
 import { UpdateOfficerProfileDto } from "src/officer_profile_dto/update.officer.profile.dto";
 import { DeleteOfficerProfileDto } from "src/officer_profile_dto/delete.officer.profile.dto";
 import { DeleteOfficerAccountDto } from "src/officer_account_dto/delete.officer.account.dto";
+import { ForgotOfficerAccountDto } from "src/officer_account_dto/forgot.officer.account";
+import { UpdateOfficerAccountInfoDto } from "src/officer_account_dto/update.officer.account.info";
+import { IsEmail } from "class-validator";
 
 @Injectable()
 export class OfficerAccountService{
@@ -79,7 +82,74 @@ export class OfficerAccountService{
         }
         return account;
     }
-    
+
+    async forgotOfficerPassword(forgotOfficerAccountDto:ForgotOfficerAccountDto,user:any):Promise<{message:string}>{
+        const {email,newpassword} = forgotOfficerAccountDto;
+        const account = await this.officerAccountRepository.findOne({
+            where:{email}
+        })
+
+        if(!account){
+            throw new NotFoundException('Officer account with this account is not found');
+        }
+        if(user?.sub !== account.id){
+            throw new UnauthorizedException('Unauthorized access');
+        }
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.has(forgotOfficerAccountDto,newpassword,saltRounds);
+
+        account.password = hashedPassword;
+        await this.officerAccountRepository.save(account);
+        return{
+            message:'Password reset successfully'
+        }
+    }
+    async updateOfficerAccount(updateOfficerAccountInfoDto:UpdateOfficerAccountInfoDto,officerId:number,user:any):Promise<{message:string}>{
+        const account = await this.officerAccountRepository.findOne({
+            where:{id:officerId}
+        })
+        if(user?.sub !== officerId){
+            throw new UnauthorizedException('Unauthorized access');
+        }
+        if(!account){
+            throw new NotFoundException('Officer account not found');
+        }
+        Object.assign(account,{
+            user_name:updateOfficerAccountInfoDto.user_name
+        })
+        await this.officerAccountRepository.save(account);
+        return{
+            message:'Officer account information updated successfully'
+        }
+    }
+
+    async deletOfficerAccount(deleteOfficerAccountDto:DeleteOfficerAccountDto,officerId:number,user:any):Promise<{message:string}>{
+        const {email,password} = deleteOfficerAccountDto;
+
+        const account = await this.officerAccountRepository.findOne({
+            where:{id:officerId}
+        })
+
+        if(user?.sub !== officerId){
+            throw new UnauthorizedException('Unauthorized access');
+        }
+        if(!email||!password){
+            throw new NotFoundException('Wrong Credentials');
+        }
+
+        if (!account){
+            throw new NotFoundException('Officer account was not found');
+        }
+        if(!await bcrypt.compare(deleteOfficerAccountDto.password,account.password)){
+            throw new UnauthorizedException('Invalid Credentials');
+        }
+
+        await this.officerAccountRepository.delete({id:officerId});
+        return{
+            message:'Officer account deleted successfully'
+        }
+    }
     async createofficerProfile(createOfficerProfileDto:CreateOfficerProfileDto,officerId:number,user:any):Promise<Partial<officerprofile>>{
         if(user?.sub !== officerId){
             throw new UnauthorizedException('Unathorized access');
@@ -162,10 +232,7 @@ export class OfficerAccountService{
             message:'Updated officer profile successfully'
         }
     } 
-    async deleteOfficerProfile(
-    deleteOfficerProfileDto: DeleteOfficerProfileDto,
-    officerId: number,
-    user: any
+    async deleteOfficerProfile(deleteOfficerProfileDto: DeleteOfficerProfileDto,officerId: number,user: any
 ): Promise<{message: string}> {
     const {email, password} = deleteOfficerProfileDto;
     
