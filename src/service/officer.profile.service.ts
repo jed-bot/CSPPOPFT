@@ -9,17 +9,49 @@ import { CreateOfficerProfileDto } from 'src/officer_profile_dto/create.officer.
 import {officerprofile} from 'src/entities/officerprofile.entity';
 import {OfficerAccountService} from 'src/service/officer.account.service';
 import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.profile.dto';
+import { CreateOfficerBmiDto } from 'src/officer_bmi_dto/create.officer.bmi.dto';
+import { officeraccount } from 'src/entities/officeraccount.entity';
+import { officerbmi } from 'src/entities/officerbmi.entity';
+
 
 
 @Injectable()
 export class OfficerProfileService{
     constructor(
         @InjectRepository(officerprofile)
-        private readonly officerProfileRepo: Repository<officerprofile>,
+        private readonly officerProfileRepository: Repository<officerprofile>,
         private readonly jwtService:JwtService,
         private readonly officerAccountService: OfficerAccountService,
+        
+        @InjectRepository(officerbmi)
+        private officerBmiRepository:Repository<officerbmi>
     ){}
 
-    
 
-}
+    async createOfficerbmi(createOfficerBmiDto:CreateOfficerBmiDto,profileId:number,user:any):Promise<{message:string}>{
+        const account  = await this.officerProfileRepository.findOne({
+            where:{id:profileId}
+        })
+
+        if(user?.sub !==profileId){
+            throw new UnauthorizedException('Unauthorized Access')
+        }
+        if(!profileId){
+            throw new NotFoundException('Your profile was not found')
+        }
+
+        const createBmi = this.officerBmiRepository.create({
+            officer_profile_id:profileId,
+            height_meter:createOfficerBmiDto.height_meter,
+            weight_kg:createOfficerBmiDto.weight_kg,
+            month_taken:createOfficerBmiDto.month_taken
+          });
+          
+        await this.officerBmiRepository.save(createBmi)
+          return {
+            message: 'Added the Bmi Successfully'
+          }
+        }
+    }
+
+ 
