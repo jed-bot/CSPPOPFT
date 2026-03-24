@@ -15,6 +15,7 @@ import { AdminStatusDto } from 'src/admin_dto/status.admin';
 import { UpdateOfficerStatus } from 'src/officer_account_dto/update.officer.profile.dto';
 import{officeraccount} from 'src/entities/officeraccount.entity';
 import { OfficerAccountService } from 'src/service/officer.account.service';
+import { DeleteOfficerProfileDto } from 'src/officer_profile_dto/delete.officer.profile.dto';
 
 
 @Injectable()

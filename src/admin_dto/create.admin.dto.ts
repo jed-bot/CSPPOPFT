@@ -1,4 +1,3 @@
-import { Optional } from "@nestjs/common";
 import { IsEmail, IsString, IsOptional, MinLength, MaxLength, Matches } from "class-validator";
 
 export class CreateAdminDto{
@@ -17,7 +16,7 @@ export class CreateAdminDto{
   @Matches(/^[a-zA-Z0-9_]+$/, {
     message: 'User name can only contain letters, numbers, and underscores',
   }) 
-  @Optional()
+  @IsOptional()
   @IsString()
   @MaxLength(50)
   user_name:string;
