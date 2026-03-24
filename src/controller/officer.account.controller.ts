@@ -9,6 +9,7 @@ import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.
 import { DeleteOfficerProfileDto } from 'src/officer_profile_dto/delete.officer.profile.dto';
 import { DeleteOfficerAccountDto } from 'src/officer_account_dto/delete.officer.account.dto';
 import { UpdateOfficerAccountInfoDto } from 'src/officer_account_dto/update.officer.account.info';
+import { ForgotOfficerAccountDto } from 'src/officer_account_dto/forgot.officer.account';
 
 @Controller()
 export class OfficerAccountController{
@@ -29,7 +30,11 @@ export class OfficerAccountController{
     async getOfficerAccountInfo(@Request()req){
         return this.officerAccountService.getOfficerAccountInfo(req.user.sub,req.user);
     }
-
+    @UseGuards(AuthGuard('jwt'))
+    @Put('auth/officer/reset_password')
+    async resetOfficerPassword(@Request()req,@Body()forgotOfficerAccountDto:ForgotOfficerAccountDto){
+        return this.officerAccountService.forgotOfficerPassword(forgotOfficerAccountDto,req.user.sub);
+    }
     @UseGuards(AuthGuard('jwt'))
     @Put('auth/officer/update_account')
     async updateOfficerAccountInfo(@Request()req,@Body()updateOfficerProfileInfoDto:UpdateOfficerAccountInfoDto){
