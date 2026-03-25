@@ -12,6 +12,7 @@ import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.
 import { CreateOfficerBmiDto } from 'src/officer_bmi_dto/create.officer.bmi.dto';
 import { officeraccount } from 'src/entities/officeraccount.entity';
 import { officerbmi } from 'src/entities/officerbmi.entity';
+import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
 
 
 
@@ -81,9 +82,9 @@ export class OfficerProfileService{
     return bmiRecord;
 }
 
-   async updateOfficeBmi(
+   async updateOfficerBmi(
     accountId: number, 
-    updateOfficerBmiDto: CreateOfficerBmiDto, 
+    updateOfficerBmiDto: UpdateOfficerBmiDto, 
     user: any
 ): Promise<{ message: string }> {
     // Check authorization

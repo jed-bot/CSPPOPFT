@@ -12,6 +12,7 @@ import { UpdateOfficerAccountInfoDto } from 'src/officer_account_dto/update.offi
 import { ForgotOfficerAccountDto } from 'src/officer_account_dto/forgot.officer.account';
 import { CreateOfficerBmiDto } from 'src/officer_bmi_dto/create.officer.bmi.dto';
 import { OfficerProfileService } from 'src/service/officer.profile.service';
+import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
 
 @Controller()
 export class OfficerAccountController{
@@ -84,6 +85,12 @@ export class OfficerAccountController{
     @Get('auth/officer/bmi')
     async getOfficerBmi(@Request()req){
         return this.officerProfileService.getOfficerBmi(req.user.sub,req.user)
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Put('auth/officer/update_bmi')
+    async updateOfficerBmi(@Request()req,@Body()updateOfficerBmiDto:UpdateOfficerBmiDto){
+        return this.officerProfileService.updateOfficerBmi(req.user.sub,updateOfficerBmiDto,req.user)
     }
     
 }
