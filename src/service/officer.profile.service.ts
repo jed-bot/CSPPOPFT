@@ -13,7 +13,8 @@ import { CreateOfficerBmiDto } from 'src/officer_bmi_dto/create.officer.bmi.dto'
 import { officeraccount } from 'src/entities/officeraccount.entity';
 import { officerbmi } from 'src/entities/officerbmi.entity';
 import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
-
+import { CreateOfficer1minPushupDto } from 'src/officer1min_push_dto/create.1min.psuhup.dto';
+import { officer1minpushup } from 'src/entities/officer1minpushup.entity';
 
 
 @Injectable()
@@ -25,7 +26,10 @@ export class OfficerProfileService{
         private readonly officerAccountService: OfficerAccountService,
         
         @InjectRepository(officerbmi)
-        private officerBmiRepository:Repository<officerbmi>
+        private officerBmiRepository:Repository<officerbmi>,
+
+        @InjectRepository(officer1minpushup)
+        private pushUpRepository: Repository<officer1minpushup>
     ){}
 
 
@@ -52,7 +56,7 @@ export class OfficerProfileService{
     };
 }
 
-    async getOfficerBmi(accountId: number, user: any): Promise<officerbmi> {
+   async getOfficerBmi(accountId: number, user: any): Promise<officerbmi[]> {  // Return array
     // Check authorization
     if (user?.sub !== accountId) {
         throw new UnauthorizedException('Unauthorized access');
@@ -70,16 +74,14 @@ export class OfficerProfileService{
     // STEP 2: Get the actual profile ID
     const profileId = profile.id;
     
-    // STEP 3: Find BMI using the actual profile ID
-    const bmiRecord = await this.officerBmiRepository.findOne({
-        where: { officer_profile_id: profileId }
+    // STEP 3: Find ALL BMI records using find() instead of findOne()
+    const bmiRecords = await this.officerBmiRepository.find({
+        where: { officer_profile_id: profileId },
+        order: { month_taken: 'DESC' }  // Optional: sort by date, most recent first
     });
     
-    if (!bmiRecord) {
-        throw new NotFoundException('BMI record not found for this officer');
-    }
-    
-    return bmiRecord;
+    // Return empty array if no records found (instead of throwing error)
+    return bmiRecords;
 }
 
    async updateOfficerBmi(
@@ -127,10 +129,7 @@ export class OfficerProfileService{
         message: 'BMI updated successfully'
     };
 }
-async deleteOfficerBmi(
-    accountId: number, 
-    user: any
-): Promise<{ message: string }> {
+async deleteOfficerBmi(accountId: number, user: any): Promise<{ message: string }> {
     // Check authorization
     if (user?.sub !== accountId) {
         throw new UnauthorizedException('Unauthorized access');
@@ -164,5 +163,43 @@ async deleteOfficerBmi(
         message: 'BMI record deleted successfully'
     };
 }
+async createOfficer1minPushup(
+    createOfficer1minPushupDto: CreateOfficer1minPushupDto,
+    accountId: number, 
+    user: any
+): Promise<{ message: string }> {
+    // Check authorization
+    if (user?.sub !== accountId) {
+        throw new UnauthorizedException('Unauthorized access');
+    }
+
+    // STEP 1: Find the profile using the account ID
+    const officerProfile = await this.officerProfileRepository.findOne({
+        where: { officer_account_id: accountId }
+    });
+
+    if (!officerProfile) {
+        throw new NotFoundException(`Officer profile not found for account ID ${accountId}`);
+    }
+
+    // STEP 2: Get the actual profile ID
+    const profileId = officerProfile.id;
+
+    // STEP 3: Create the pushup record
+    const pushupRecord = this.pushUpRepository.create({
+        officerprofile_id: profileId,  // Fixed: use profileId variable, not undefined officer_profile_id
+        gender: createOfficer1minPushupDto.gender,
+        age: createOfficer1minPushupDto.age,
+        reps: createOfficer1minPushupDto.reps,
+        month_taken: createOfficer1minPushupDto.month_taken,
+        // Note: grade is not included - database will compute it automatically
+    });
+
+    // STEP 4: Save to database
+    await this.pushUpRepository.save(pushupRecord);
+    
+    return {
+        message: '1-Minute Pushup record added successfully'
+    };
 }
- 
+}

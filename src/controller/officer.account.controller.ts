@@ -92,5 +92,11 @@ export class OfficerAccountController{
     async updateOfficerBmi(@Request()req,@Body()updateOfficerBmiDto:UpdateOfficerBmiDto){
         return this.officerProfileService.updateOfficerBmi(req.user.sub,updateOfficerBmiDto,req.user)
     }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Delete('auth/officer/delete_bmi')
+    async deleteOfficerBmi(@Request()req){
+        return this.officerProfileService.deleteOfficerBmi(req.user.sub,req.user)
+    }
     
 }
