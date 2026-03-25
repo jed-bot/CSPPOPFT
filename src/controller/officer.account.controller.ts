@@ -79,12 +79,11 @@ export class OfficerAccountController{
     async createOfficerBmi(@Request()req,@Body()createdOfficerBmiDto:CreateOfficerBmiDto){
         return this.officerProfileService.createOfficerbmi(createdOfficerBmiDto,req.user.sub,req.user)
     }
+
     @UseGuards(AuthGuard('jwt'))
-@Get('auth/decode-token')
-async decodeToken(@Request() req) {
-    return {
-        user: req.user,
-        message: 'Use this ID to create BMI records'
-    };
-}
+    @Get('auth/officer/bmi')
+    async getOfficerBmi(@Request()req){
+        return this.officerProfileService.getOfficerBmi(req.user.sub,req.user)
+    }
+    
 }
