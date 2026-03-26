@@ -10,12 +10,13 @@ import { JwtStrategy } from "src/auth/jwt.strategy";
 import { OfficerProfileService } from "src/service/officer.profile.service";
 import { officerbmi } from "src/entities/officerbmi.entity";
 import { OfficerAccountController } from "src/controller/officer.account.controller";
+import { officer1minpushup } from "src/entities/officer1minpushup.entity";
 
 @Module({
     imports:[
 
         ConfigModule.forRoot({isGlobal:true}),
-        TypeOrmModule.forFeature([officeraccount,officerbmi]),
+        TypeOrmModule.forFeature([officeraccount,officerbmi,officer1minpushup]),
         PassportModule.register({defaultStrategy:'jwt'}),
         JwtModule.register({
             secret:process.env.JWT_SECRET,

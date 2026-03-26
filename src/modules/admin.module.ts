@@ -15,12 +15,13 @@ import { OfficerProfileController } from "src/controller/officer.profile.control
 import { officerprofile } from "src/entities/officerprofile.entity";
 import { officerbmi } from "src/entities/officerbmi.entity";
 import { AuthModule } from "src/auth/auth.module";
+import { officer1minpushup } from "src/entities/officer1minpushup.entity";
 
 @Module({
 
     imports:[
         ConfigModule.forRoot({isGlobal:true}),
-        TypeOrmModule.forFeature([administrator,officeraccount,officerprofile,officerbmi]),
+        TypeOrmModule.forFeature([administrator,officeraccount,officerprofile,officerbmi,officer1minpushup]),
         JwtModule.register({
             secret:process.env.JWT_SECRET,
             signOptions:{expiresIn:'1h'},
