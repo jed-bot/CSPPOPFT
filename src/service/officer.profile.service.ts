@@ -15,7 +15,8 @@ import { officerbmi } from 'src/entities/officerbmi.entity';
 import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
 import { CreateOfficer1minPushupDto } from 'src/officer1min_push_dto/create.1min.psuhup.dto';
 import { officer1minpushup } from 'src/entities/officer1minpushup.entity';
-
+import { profile } from 'console';
+import { UpdateOfficer1minPushupDto } from 'src/officer1min_push_dto/update.1min.pushup';
 
 @Injectable()
 export class OfficerProfileService{
@@ -185,4 +186,54 @@ async createOfficer1minPushup(
         message: '1-Minute Pushup record added successfully'
     };
 }
+
+    async getOfficer1minPushup(accountId:number,user:any):Promise<{officer1minpushup: any[]}>{
+        if(user?.sub !== accountId){
+            throw new UnauthorizedException('Unauthorized access');
+        }
+        const profile = await this.officerProfileRepository.findOne({
+            where:{officer_account_id: accountId}
+        });
+        if(!profile){
+            throw new NotFoundException('Officer profile not found');
+        }
+        const profileId = profile.id;
+        const pushupRecords = await this.pushUpRepository.find({
+            where:{officer_id:profileId},
+            order:{test_date:'DESC'}
+        });
+        return {officer1minpushup:pushupRecords}
+    }
+
+    async updateOfficer1minPushup(updateOfficer1minPushupDto: UpdateOfficer1minPushupDto,accountId:number,user:any):Promise<{message:string}>{
+        if(user?.sub!==accountId){
+            throw new UnauthorizedException('Unauthorized access');
+        }
+
+        const profile = await this.officerProfileRepository.findOne({
+            where:{officer_account_id:accountId}
+        });
+        if(!profile){
+            throw new NotFoundException('Officer profile not found');
+        }
+
+        const profileId = profile.id;
+        const pushupRecord = await this.pushUpRepository.findOne({
+            where:{officer_id:profileId}
+        })
+        if(!pushupRecord){
+            throw new NotFoundException('1-Minute Pushup record not found');
+        }
+
+        Object.assign(pushupRecord,{
+            gender: updateOfficer1minPushupDto.gender, 
+            age: updateOfficer1minPushupDto.age,
+            reps: updateOfficer1minPushupDto.reps,
+            test_date: updateOfficer1minPushupDto.test_date
+        })
+        await this.pushUpRepository.save(pushupRecord);
+        return{
+            message:'Updated successfully'
+        }
+    }
 }

@@ -14,6 +14,7 @@ import { CreateOfficerBmiDto } from 'src/officer_bmi_dto/create.officer.bmi.dto'
 import { OfficerProfileService } from 'src/service/officer.profile.service';
 import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
 import { CreateOfficer1minPushupDto } from 'src/officer1min_push_dto/create.1min.psuhup.dto';
+import { UpdateOfficer1minPushupDto } from 'src/officer1min_push_dto/update.1min.pushup';
 
 @Controller()
 export class OfficerAccountController{
@@ -106,4 +107,14 @@ export class OfficerAccountController{
         return this.officerProfileService.createOfficer1minPushup(createOfficer1minPushupDto,req.user.sub,req.user)
     }
     
+    @UseGuards(AuthGuard('jwt'))
+    @Get('auth/officer/pushup_record')
+    async getOfficerPushupRecord(@Request()req){
+        return this.officerProfileService.getOfficer1minPushup(req.user.sub,req.user)
+    }
+    @UseGuards(AuthGuard('jwt'))
+    @Put('auth/officer/update_officer_pushup_record')
+    async updateOfficerPushupRecord(@Request()req,@Body()updateOfficer1minPushupDto:UpdateOfficer1minPushupDto){
+        return this.officerProfileService.updateOfficer1minPushup( updateOfficer1minPushupDto,req.user.sub,req.user)
+}
 }

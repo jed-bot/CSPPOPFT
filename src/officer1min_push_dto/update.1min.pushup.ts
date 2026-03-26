@@ -1,4 +1,4 @@
-export class CreateOfficer1minPushupDto{
+export class UpdateOfficer1minPushupDto{
     officer_profile_id:number;
     gender:string;
     age:number;
