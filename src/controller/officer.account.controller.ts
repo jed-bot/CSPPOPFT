@@ -13,6 +13,7 @@ import { ForgotOfficerAccountDto } from 'src/officer_account_dto/forgot.officer.
 import { CreateOfficerBmiDto } from 'src/officer_bmi_dto/create.officer.bmi.dto';
 import { OfficerProfileService } from 'src/service/officer.profile.service';
 import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
+import { CreateOfficer1minPushupDto } from 'src/officer1min_push_dto/create.1min.psuhup.dto';
 
 @Controller()
 export class OfficerAccountController{
@@ -97,6 +98,12 @@ export class OfficerAccountController{
     @Delete('auth/officer/delete_bmi')
     async deleteOfficerBmi(@Request()req){
         return this.officerProfileService.deleteOfficerBmi(req.user.sub,req.user)
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('auth/officer/create_pushup_record')
+    async createOfficerPushupRecord(@Request()req,@Body()createOfficer1minPushupDto:CreateOfficer1minPushupDto){
+        return this.officerProfileService.createOfficer1minPushup(createOfficer1minPushupDto,req.user.sub,req.user)
     }
     
 }

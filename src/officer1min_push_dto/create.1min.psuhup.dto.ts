@@ -3,5 +3,5 @@ export class CreateOfficer1minPushupDto{
     gender:string;
     age:number;
     reps:number;
-    month_taken:string;
+    test_date:string;
 }

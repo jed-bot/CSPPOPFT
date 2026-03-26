@@ -1,15 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, CreateDateColumn } from "typeorm";
 import { officerprofile } from "./officerprofile.entity";
 
-
-@Entity('officer1minpushup')
+@Entity('pushup_1min')  // Your table name
 export class officer1minpushup {
     @PrimaryGeneratedColumn()
     id: number;
 
-    // foreign key, no length on numeric type
-    @Column()
-    officerprofile_id: number;
+    // Match the database column name exactly
+    @Column({ name: 'officer_id' })
+    officer_id: number;  // Use the exact column name from database
 
     @Column({ length: 100 })
     gender: string;
@@ -20,13 +19,18 @@ export class officer1minpushup {
     @Column()
     reps: number;
 
-    @Column({ length: 100 })
-    month_taken: string;
+    // Match the database column name exactly
+    @Column({ name: 'test_date', length: 100 })
+    test_date: string;  // Use the exact column name from database
 
+    // Match the database column name exactly
     @Column()
-    grade: number;
+    grade: string;  // Note: Your CSV shows "70%", so grade is likely a string/varchar
+
+    @CreateDateColumn({ name: 'created_at' })
+    created_at: Date;
 
     @OneToOne(() => officerprofile, (profile: officerprofile) => profile.officer1minpushup)
-    @JoinColumn({ name: 'officerprofile_id' })
+    @JoinColumn({ name: 'officer_id' })  // Use the actual foreign key column
     officerprofile: officerprofile;
-} 
+}

@@ -56,13 +56,11 @@ export class OfficerProfileService{
     };
 }
 
-   async getOfficerBmi(accountId: number, user: any): Promise<officerbmi[]> {  // Return array
-    // Check authorization
+   async getOfficerBmi(accountId: number, user: any): Promise<officerbmi[]> {  
     if (user?.sub !== accountId) {
         throw new UnauthorizedException('Unauthorized access');
     }
     
-    // STEP 1: Find the profile using the account ID
     const profile = await this.officerProfileRepository.findOne({
         where: { officer_account_id: accountId }
     });
@@ -70,17 +68,13 @@ export class OfficerProfileService{
     if (!profile) {
         throw new NotFoundException(`Officer profile not found for account ID ${accountId}`);
     }
-    
-    // STEP 2: Get the actual profile ID
+
     const profileId = profile.id;
-    
-    // STEP 3: Find ALL BMI records using find() instead of findOne()
     const bmiRecords = await this.officerBmiRepository.find({
         where: { officer_profile_id: profileId },
-        order: { month_taken: 'DESC' }  // Optional: sort by date, most recent first
+        order: { month_taken: 'DESC' }
     });
     
-    // Return empty array if no records found (instead of throwing error)
     return bmiRecords;
 }
 
@@ -89,12 +83,9 @@ export class OfficerProfileService{
     updateOfficerBmiDto: UpdateOfficerBmiDto, 
     user: any
 ): Promise<{ message: string }> {
-    // Check authorization
     if (user?.sub !== accountId) {
         throw new UnauthorizedException('Unauthorized access');
     }
-
-    // STEP 1: Find the profile using the account ID
     const officerProfile = await this.officerProfileRepository.findOne({
         where: { officer_account_id: accountId }
     });
@@ -103,10 +94,8 @@ export class OfficerProfileService{
         throw new NotFoundException(`Officer profile not found for account ID ${accountId}`);
     }
 
-    // STEP 2: Get the actual profile ID
     const profileId = officerProfile.id;
 
-    // STEP 3: Find the BMI record using the actual profile ID
     const bmiRecord = await this.officerBmiRepository.findOne({
         where: { officer_profile_id: profileId }
     });
@@ -114,13 +103,10 @@ export class OfficerProfileService{
     if (!bmiRecord) {
         throw new NotFoundException('BMI record not found for this officer');
     }
-
-    // STEP 4: Update the BMI record
     Object.assign(bmiRecord, {
         height_meter: updateOfficerBmiDto.height_meter,
         weight_kg: updateOfficerBmiDto.weight_kg,
         month_taken: updateOfficerBmiDto.month_taken
-        // Don't include bmi and category - let database calculate them
     });
 
     await this.officerBmiRepository.save(bmiRecord);
@@ -144,10 +130,9 @@ async deleteOfficerBmi(accountId: number, user: any): Promise<{ message: string 
         throw new NotFoundException(`Officer profile not found for account ID ${accountId}`);
     }
 
-    // STEP 2: Get the actual profile ID
     const profileId = officerProfile.id;
 
-    // STEP 3: Find the BMI record using the actual profile ID
+    
     const bmiRecord = await this.officerBmiRepository.findOne({
         where: { officer_profile_id: profileId }
     });
@@ -155,8 +140,6 @@ async deleteOfficerBmi(accountId: number, user: any): Promise<{ message: string 
     if (!bmiRecord) {
         throw new NotFoundException('BMI record not found for this officer');
     }
-
-    // STEP 4: Delete the BMI record
     await this.officerBmiRepository.delete({ id: bmiRecord.id });
     
     return {
@@ -168,12 +151,12 @@ async createOfficer1minPushup(
     accountId: number, 
     user: any
 ): Promise<{ message: string }> {
-    // Check authorization
+    
     if (user?.sub !== accountId) {
         throw new UnauthorizedException('Unauthorized access');
     }
 
-    // STEP 1: Find the profile using the account ID
+    
     const officerProfile = await this.officerProfileRepository.findOne({
         where: { officer_account_id: accountId }
     });
@@ -182,20 +165,20 @@ async createOfficer1minPushup(
         throw new NotFoundException(`Officer profile not found for account ID ${accountId}`);
     }
 
-    // STEP 2: Get the actual profile ID
+
     const profileId = officerProfile.id;
 
-    // STEP 3: Create the pushup record
+
     const pushupRecord = this.pushUpRepository.create({
-        officerprofile_id: profileId,  // Fixed: use profileId variable, not undefined officer_profile_id
+        officer_id: profileId, 
         gender: createOfficer1minPushupDto.gender,
         age: createOfficer1minPushupDto.age,
         reps: createOfficer1minPushupDto.reps,
-        month_taken: createOfficer1minPushupDto.month_taken,
-        // Note: grade is not included - database will compute it automatically
+        test_date: createOfficer1minPushupDto.test_date,
+       
     });
 
-    // STEP 4: Save to database
+    
     await this.pushUpRepository.save(pushupRecord);
     
     return {
