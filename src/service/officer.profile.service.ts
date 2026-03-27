@@ -79,74 +79,56 @@ export class OfficerProfileService{
     return bmiRecords;
 }
 
-   async updateOfficerBmi(
-    accountId: number, 
-    updateOfficerBmiDto: UpdateOfficerBmiDto, 
-    user: any
-): Promise<{ message: string }> {
-    if (user?.sub !== accountId) {
+async updateOfficerBmi(bmiRecordId:number,updateOfficerBmiDto:UpdateOfficerBmiDto,accountId:number,user:any):Promise<{message:string}>{
+    if(user?.sub !== accountId){
         throw new UnauthorizedException('Unauthorized access');
     }
     const officerProfile = await this.officerProfileRepository.findOne({
-        where: { officer_account_id: accountId }
-    });
+        where:{officer_account_id:accountId}
+    })
 
-    if (!officerProfile) {
-        throw new NotFoundException(`Officer profile not found for account ID ${accountId}`);
+    if(!officerProfile){
+        throw new NotFoundException('Account profile not found');
     }
-
-    const profileId = officerProfile.id;
 
     const bmiRecord = await this.officerBmiRepository.findOne({
-        where: { officer_profile_id: profileId }
-    });
-
-    if (!bmiRecord) {
-        throw new NotFoundException('BMI record not found for this officer');
+        where:{id:bmiRecordId,officer_profile_id:officerProfile.id}
+    })
+    if(!bmiRecord){
+        throw new NotFoundException('BMI record not found');
     }
-    Object.assign(bmiRecord, {
-        height_meter: updateOfficerBmiDto.height_meter,
-        weight_kg: updateOfficerBmiDto.weight_kg,
-        month_taken: updateOfficerBmiDto.month_taken
-    });
-
+    Object.assign(bmiRecord,updateOfficerBmiDto);
     await this.officerBmiRepository.save(bmiRecord);
-    
-    return {
-        message: 'BMI updated successfully'
-    };
+    return{
+        message:'Updated the BMI record successfully'
+    }
+
 }
-async deleteOfficerBmi(accountId: number, user: any): Promise<{ message: string }> {
-    // Check authorization
-    if (user?.sub !== accountId) {
+
+async deleteOfficerBmi(bmiRecordId:number,accountId:number,user:any){
+    if(user?.sub !== accountId){
         throw new UnauthorizedException('Unauthorized access');
     }
-
-    // STEP 1: Find the profile using the account ID
     const officerProfile = await this.officerProfileRepository.findOne({
-        where: { officer_account_id: accountId }
-    });
+        where:{officer_account_id:accountId}
+    })
 
-    if (!officerProfile) {
-        throw new NotFoundException(`Officer profile not found for account ID ${accountId}`);
+    if(!officerProfile){
+        throw new NotFoundException('Account profile not found');
     }
 
-    const profileId = officerProfile.id;
-
-    
     const bmiRecord = await this.officerBmiRepository.findOne({
-        where: { officer_profile_id: profileId }
-    });
-
-    if (!bmiRecord) {
-        throw new NotFoundException('BMI record not found for this officer');
+        where:{id:bmiRecordId,officer_profile_id:officerProfile.id}
+    })
+    if(!bmiRecord){
+        throw new NotFoundException('BMI record not found');
     }
-    await this.officerBmiRepository.delete({ id: bmiRecord.id });
-    
-    return {
-        message: 'BMI record deleted successfully'
-    };
+    await this.officerBmiRepository.remove(bmiRecord);
+    return{
+        message:'Deleted the BMI record successfully'
+    }
 }
+
 async createOfficer1minPushup(
     createOfficer1minPushupDto: CreateOfficer1minPushupDto,
     accountId: number, 

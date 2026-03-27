@@ -1,4 +1,4 @@
-import {Controller,Get,Post,Body,UseGuards,Put,Request,Delete,Param} from '@nestjs/common';
+import {Controller,Get,Post,Body,UseGuards,Put,Request,Delete,Param, Req} from '@nestjs/common';
 import { OfficerAccountModule} from 'src/modules/officer.account.module';
 import { OfficerAccountService } from 'src/service/officer.account.service';
 import { LoginOfficerAccountDto } from 'src/officer_account_dto/login.officer.account';
@@ -89,16 +89,17 @@ export class OfficerAccountController{
         return this.officerProfileService.getOfficerBmi(req.user.sub,req.user)
     }
 
+    // adding a new method 
     @UseGuards(AuthGuard('jwt'))
-    @Put('auth/officer/update_bmi')
-    async updateOfficerBmi(@Request()req,@Body()updateOfficerBmiDto:UpdateOfficerBmiDto){
-        return this.officerProfileService.updateOfficerBmi(req.user.sub,updateOfficerBmiDto,req.user)
+    @Put('auth/officer/update_bmi/:id')
+    async updateOfficerBmi(@Request() req,@Param('id') id:number,@Body()updateOfficerBmiDto:UpdateOfficerBmiDto ){
+        return this.officerProfileService.updateOfficerBmi(id,updateOfficerBmiDto,req.user.sub,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Delete('auth/officer/delete_bmi')
-    async deleteOfficerBmi(@Request()req){
-        return this.officerProfileService.deleteOfficerBmi(req.user.sub,req.user)
+    @Delete('auth/officer/delete_bmi/:id')
+    async deleteOfficerBmi(@Request()req, @Param('id') id:number ){
+        return this.officerProfileService.deleteOfficerBmi(id,req.user.sub,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
