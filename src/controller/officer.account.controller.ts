@@ -1,4 +1,4 @@
-import {Controller,Get,Post,Body,UseGuards,Put,Request,Delete} from '@nestjs/common';
+import {Controller,Get,Post,Body,UseGuards,Put,Request,Delete,Param} from '@nestjs/common';
 import { OfficerAccountModule} from 'src/modules/officer.account.module';
 import { OfficerAccountService } from 'src/service/officer.account.service';
 import { LoginOfficerAccountDto } from 'src/officer_account_dto/login.officer.account';
@@ -116,5 +116,10 @@ export class OfficerAccountController{
     @Put('auth/officer/update_officer_pushup_record')
     async updateOfficerPushupRecord(@Request()req,@Body()updateOfficer1minPushupDto:UpdateOfficer1minPushupDto){
         return this.officerProfileService.updateOfficer1minPushup( updateOfficer1minPushupDto,req.user.sub,req.user)
-}
+    }
+    @UseGuards(AuthGuard('jwt'))
+    @Delete('auth/officer/delete_officer_pushup_record/:id')
+    async deleteOfficerPushupRecord(@Request()req,@Param('id') id:number){
+        return this.officerProfileService.deletepushUp(id,req.user.sub)
+    }
 }

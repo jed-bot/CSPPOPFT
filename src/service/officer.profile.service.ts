@@ -236,7 +236,8 @@ async createOfficer1minPushup(
             message:'Updated successfully'
         }
     }
-    async deletepushUp(accountId:number,user:any):Promise<{message:string}>{
+    async deletepushUp(pushUpId:number,user:any):Promise<{message:string}>{
+        const accountId = user.sub;
         if(user?.sub!==accountId){
             throw new UnauthorizedException('Unauthorized access');
         }
@@ -248,7 +249,10 @@ async createOfficer1minPushup(
         }
         const profileId = profile.id;
         const pushUpRecord = await this.pushUpRepository.findOne({
-            where:{officer_id:profileId}
+            where:{
+                id:pushUpId,
+                officer_id:profileId
+            }
         })
         if(!pushUpRecord){
             throw new NotFoundException('1-Minute Pushup record not found');
