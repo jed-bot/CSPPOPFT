@@ -113,13 +113,15 @@ export class OfficerAccountController{
         return this.officerProfileService.getOfficer1minPushup(req.user.sub,req.user)
     }
     @UseGuards(AuthGuard('jwt'))
-    @Put('auth/officer/update_officer_pushup_record')
-    async updateOfficerPushupRecord(@Request()req,@Body()updateOfficer1minPushupDto:UpdateOfficer1minPushupDto){
-        return this.officerProfileService.updateOfficer1minPushup( updateOfficer1minPushupDto,req.user.sub,req.user)
+    @Put('auth/officer/update_officer_pushup_record/:id')  
+    async updateOfficerPushupRecord(@Request() req,@Param('id') id: number,@Body() updateOfficer1minPushupDto: UpdateOfficer1minPushupDto) {
+    return this.officerProfileService.updateOfficer1minPushup(
+        id,updateOfficer1minPushupDto,req.user.sub);
     }
     @UseGuards(AuthGuard('jwt'))
     @Delete('auth/officer/delete_officer_pushup_record/:id')
     async deleteOfficerPushupRecord(@Request() req, @Param('id') id: number) {
         return this.officerProfileService.deletepushUp(id, req.user);  // Pass full user object
-}
+    }
+
 }

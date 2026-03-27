@@ -205,37 +205,38 @@ async createOfficer1minPushup(
         return {officer1minpushup:pushupRecords}
     }
 
-    async updateOfficer1minPushup(updateOfficer1minPushupDto: UpdateOfficer1minPushupDto,accountId:number,user:any):Promise<{message:string}>{
-        if(user?.sub!==accountId){
-            throw new UnauthorizedException('Unauthorized access');
-        }
-
-        const profile = await this.officerProfileRepository.findOne({
-            where:{officer_account_id:accountId}
-        });
-        if(!profile){
-            throw new NotFoundException('Officer profile not found');
-        }
-
-        const profileId = profile.id;
-        const pushupRecord = await this.pushUpRepository.findOne({
-            where:{officer_id:profileId}
-        })
-        if(!pushupRecord){
-            throw new NotFoundException('1-Minute Pushup record not found');
-        }
-
-        Object.assign(pushupRecord,{
-            gender: updateOfficer1minPushupDto.gender, 
-            age: updateOfficer1minPushupDto.age,
-            reps: updateOfficer1minPushupDto.reps,
-            test_date: updateOfficer1minPushupDto.test_date
-        })
-        await this.pushUpRepository.save(pushupRecord);
-        return{
-            message:'Updated successfully'
-        }
+   async updateOfficer1minPushup(
+    pushupId: number,  // ← Add this parameter
+    updateDto: UpdateOfficer1minPushupDto,
+    accountId: number
+): Promise<{ message: string }> {
+    // Find profile
+    const profile = await this.officerProfileRepository.findOne({
+        where: { officer_account_id: accountId }
+    });
+    
+    if (!profile) {
+        throw new NotFoundException('Officer profile not found');
     }
+    
+    // Find SPECIFIC record by ID
+    const pushupRecord = await this.pushUpRepository.findOne({
+        where: {
+            id: pushupId,  // ← Use the ID from URL
+            officer_id: profile.id
+        }
+    });
+    
+    if (!pushupRecord) {
+        throw new NotFoundException('Push-up record not found');
+    }
+    
+    // Update
+    Object.assign(pushupRecord, updateDto);
+    await this.pushUpRepository.save(pushupRecord);
+    
+    return { message: 'Updated successfully' };
+}
     async deletepushUp(pushUpId:number,user:any):Promise<{message:string}>{
         const accountId = user.sub;
         const profile = await this.officerProfileRepository.findOne({
