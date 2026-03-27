@@ -238,9 +238,6 @@ async createOfficer1minPushup(
     }
     async deletepushUp(pushUpId:number,user:any):Promise<{message:string}>{
         const accountId = user.sub;
-        if(user?.sub!==accountId){
-            throw new UnauthorizedException('Unauthorized access');
-        }
         const profile = await this.officerProfileRepository.findOne({
             where:{officer_account_id:accountId}
         })
@@ -257,9 +254,9 @@ async createOfficer1minPushup(
         if(!pushUpRecord){
             throw new NotFoundException('1-Minute Pushup record not found');
         }
-        await this.pushUpRepository.delete({
-            id:pushUpRecord.id
-        })
+        await this.pushUpRepository.delete(
+            pushUpId
+        )
         return{
             message:'Deleted the record successfully'
         }

@@ -119,7 +119,7 @@ export class OfficerAccountController{
     }
     @UseGuards(AuthGuard('jwt'))
     @Delete('auth/officer/delete_officer_pushup_record/:id')
-    async deleteOfficerPushupRecord(@Request()req,@Param('id') id:number){
-        return this.officerProfileService.deletepushUp(id,req.user.sub)
-    }
+    async deleteOfficerPushupRecord(@Request() req, @Param('id') id: number) {
+        return this.officerProfileService.deletepushUp(id, req.user);  // Pass full user object
+}
 }
