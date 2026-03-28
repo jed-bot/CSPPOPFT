@@ -1,6 +1,6 @@
 export class CreateSitUpDto{
     age:number;
-    gender_type:string;
+    gender:string;
     reps:number;
     test_date:string;
 

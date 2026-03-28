@@ -14,7 +14,7 @@ export class OfficerPftTestService{
         private readonly officerProfileRepository:Repository<officerprofile>,
     ){}
     async createofficer1minstup(createDto:CreateSitUpDto,accountId:number,user:any ):Promise<{message:string}>{
-        if(user?.sub ! == accountId){
+        if(user?.sub !== accountId){
             throw new UnauthorizedException('Unauthoried Access');
         }
         const officerProfile = await this.officerProfileRepository.findOne({
@@ -29,13 +29,29 @@ export class OfficerPftTestService{
         const createsitUp  = this.officersitupTest.create({
             officer_id: officerProfile.id,
             age: createDto.age,
-            gender_type: createDto.gender_type,
+            gender: createDto.gender,
             reps: createDto.reps,
             test_date: createDto.test_date,
         })
         await this.officersitupTest.save(createsitUp)
         return{
-            message:'Added the bmi successfully'
+            message:'Added the sit up successfully'
         }
     }
+    async getofficersituprecords(accountId:number,user:any):Promise<officersitup1min[]>{
+        const profile = await this.officerProfileRepository.findOne({
+            where:{officer_account_id:accountId}
+        })
+        if(!profile){
+            throw new NotFoundException('Account Not Found');
+        }
+        const profileId = profile.id;
+        const sitUpRecord = await this.officersitupTest.find({
+            where:{officer_id:profileId},
+            order:{test_date:'DESC'}
+        })
+        return sitUpRecord;
+    }
+
+
 }

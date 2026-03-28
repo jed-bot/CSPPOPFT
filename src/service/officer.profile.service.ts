@@ -188,7 +188,7 @@ async createOfficer1minPushup(
     }
 
    async updateOfficer1minPushup(
-    pushupId: number,  // ← Add this parameter
+    pushupId: number, 
     updateDto: UpdateOfficer1minPushupDto,
     accountId: number
 ): Promise<{ message: string }> {

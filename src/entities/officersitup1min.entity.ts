@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, CreateDateColumn } from "typeorm";
 import { officerprofile } from "./officerprofile.entity";
 
-@Entity('situp1_mmin')
+@Entity('situp_1mmin')
 export class officersitup1min {
     @PrimaryGeneratedColumn()
     id: number;
@@ -13,7 +13,7 @@ export class officersitup1min {
     age: number;
 
     @Column({ length: 100 })
-    gender_type: string;
+    gender: string;
 
     @Column()
     reps: number;

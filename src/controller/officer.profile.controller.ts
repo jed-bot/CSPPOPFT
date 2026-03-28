@@ -18,4 +18,10 @@ export class OfficerProfileController{
     async createOfficerSitup(@Request()req,@Body()createSitUpDto:CreateSitUpDto){
         return this.OfficerPftTestService.createofficer1minstup(createSitUpDto,req.user.sub,req.user);
     }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Get('auth/officer/situp_record')
+    async getOfficerSitupRecord(@Request()req){
+        return this.OfficerPftTestService.getofficersituprecords(req.user.sub,req.user);
+    }
 }
