@@ -4,6 +4,7 @@ import { officerprofile } from 'src/entities/officerprofile.entity';
 import {officersitup1min} from 'src/entities/officersitup1min.entity';
 import { CreateSitUpDto } from 'src/officer_situp_1min/create.officer.1minsitup.dto';
 import { Repository } from 'typeorm';
+import { UpdateSitUpDto } from 'src/officer_situp_1min/update.officer.1minsitup.dto';
 
 @Injectable()
 export class OfficerPftTestService{
@@ -39,6 +40,9 @@ export class OfficerPftTestService{
         }
     }
     async getofficersituprecords(accountId:number,user:any):Promise<officersitup1min[]>{
+        if(user?.sub !== accountId){
+            throw new UnauthorizedException('Unauthorized access')
+        }
         const profile = await this.officerProfileRepository.findOne({
             where:{officer_account_id:accountId}
         })
@@ -52,6 +56,51 @@ export class OfficerPftTestService{
         })
         return sitUpRecord;
     }
+
+    async getOfficerSpecificRecord(recordId:number,accountId:number,user:any):Promise<officersitup1min>{
+        const profile =  await this.officerProfileRepository.findOne({
+            where:{officer_account_id:accountId}
+        })
+
+        if(!profile){
+            throw new NotFoundException('Account not found');
+        }
+        const profileId = profile.id
+        const sitUpRecord = await this.officersitupTest.findOne({
+            where:{id:recordId,officer_id:profileId},
+        })
+        if(!sitUpRecord){
+            throw new NotFoundException('Record not found')
+        }
+        return sitUpRecord;
+    }
+
+    async updateOfficersitupRecord(updatesitUpDto:UpdateSitUpDto,recordId:number,accountId:number,user:any):Promise<{message:string}>{
+        if(user?.sub !== accountId){
+            throw new UnauthorizedException('Unauthorized access')
+        }
+        const profile =  await this.officerProfileRepository.findOne({
+            where:{officer_account_id:accountId}
+        })
+        if(!profile){
+            throw new NotFoundException('Officer Account not found');
+        }
+        const profileId = profile.id;
+        const sitUpRecord = await this.officersitupTest.findOne({
+            where:{id:recordId,officer_id:profile.id}
+        })
+        if(!sitUpRecord){
+            throw new NotFoundException('Record not found');
+        }
+        Object.assign(sitUpRecord,updatesitUpDto);
+        await this.officersitupTest.save(sitUpRecord)
+
+        return{
+            message:'Successfully updated the sitUp Record'
+        }
+
+    }
+
 
 
 }
