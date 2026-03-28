@@ -101,6 +101,28 @@ export class OfficerPftTestService{
 
     }
 
+    async deletsitUprecord(recordId:number,accountId:number,user:any):Promise<{message:string}>{
+        if(user?.sub !== accountId){
+            throw new UnauthorizedException('Unauthorized access')
+        }
+        const profile = await this.officerProfileRepository.findOne({
+            where:{officer_account_id:accountId}
+        })
 
+        if(!profile){
+            throw new NotFoundException('Officer Profile Not Found')
+        }
+        const profileId = profile.id;
+        const sitUpRecord = await this.officersitupTest.findOne({
+            where:{id:recordId,officer_id:profile.id}
+        })
 
+        if(!sitUpRecord){
+            throw new NotFoundException('Officer sit up record is not found')
+        }
+        await this.officersitupTest.delete(recordId)
+        return{
+            message:'Deleted successfully'
+        }
+    }
 }
