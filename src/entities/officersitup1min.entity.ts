@@ -1,27 +1,33 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, CreateDateColumn } from "typeorm";
 import { officerprofile } from "./officerprofile.entity";
 
-@Entity('officersitup1min')
+@Entity('situp1_mmin')
 export class officersitup1min {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    officerprofile_id: number;
+    officer_id: number;
 
     @Column()
     age: number;
 
     @Column({ length: 100 })
-    gender: string;
+    gender_type: string;
 
     @Column()
     reps: number;
 
+    @Column({ length:100, nullable:true})
+    grade:string;
+
     @Column({ length: 100 })
-    month_taken: string;
+    test_date: string;
+
+    @CreateDateColumn({name:'created_at'})
+    created_at:Date;
 
     @OneToOne(() => officerprofile, (profile: officerprofile) => profile.officersitup1min)
-    @JoinColumn({ name: 'officerprofile_id' })
+    @JoinColumn({ name: 'officer_id' })
     officerprofile: officerprofile;
 }

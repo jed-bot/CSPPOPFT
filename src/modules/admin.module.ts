@@ -16,12 +16,14 @@ import { officerprofile } from "src/entities/officerprofile.entity";
 import { officerbmi } from "src/entities/officerbmi.entity";
 import { AuthModule } from "src/auth/auth.module";
 import { officer1minpushup } from "src/entities/officer1minpushup.entity";
+import { officersitup1min } from "src/entities/officersitup1min.entity";
+import { OfficerPftTestService } from "src/service/officer.pft.test.service";
 
 @Module({
 
     imports:[
         ConfigModule.forRoot({isGlobal:true}),
-        TypeOrmModule.forFeature([administrator,officeraccount,officerprofile,officerbmi,officer1minpushup]),
+        TypeOrmModule.forFeature([administrator,officeraccount,officerprofile,officerbmi,officer1minpushup,officersitup1min]),
         JwtModule.register({
             secret:process.env.JWT_SECRET,
             signOptions:{expiresIn:'1h'},
@@ -36,6 +38,7 @@ import { officer1minpushup } from "src/entities/officer1minpushup.entity";
         AdminService,
         OfficerAccountService,
         OfficerProfileService,
+        OfficerPftTestService,
         JwtStrategy
     ],
 })
