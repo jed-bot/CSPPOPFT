@@ -22,13 +22,13 @@ export class OfficerSprintTestController{
     }
     @UseGuards(AuthGuard('jwt'))
     @Put('auth/officer/update_sprint_record/:id')
-    async updateOfficerSprintRecord(@Request()req,@Param('id') id:number,Update300mTestDto:Update300mTestDto){
-        return this.OfficerSprintTestService.updateofficersprintrecord(Update300mTestDto,id,req.user.sub,req.user);
+    async updateOfficerSprintRecord(@Request()req,@Param('id') id:number,@Body()Dto:Update300mTestDto){
+        return this.OfficerSprintTestService.updateofficersprintrecord(Dto,req.user.sub,id,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Delete('auth/officer/delete_sprint_record/:id')
     async deleteOfficerSprintRecord(@Request()req,@Param('id') id:number){
-        return this.OfficerSprintTestService.deleteofficersprintrecord(id,req.user.sub,req.user);
+        return this.OfficerSprintTestService.deleteofficersprintrecord(id,req.user,req.user.sub);
     }
 }

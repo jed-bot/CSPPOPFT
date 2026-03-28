@@ -85,7 +85,8 @@ export class OfficerSprintTestService{
     }
 
     async updateofficersprintrecord(updateDto:Update300mTestDto,accountId:number,recordId:number,user:any):Promise<{message:string}>{
-        if(user?.sub){
+    
+        if(user?.sub !== accountId){
             throw new UnauthorizedException('Unauthorized Access')
         }
         const profile = await this.officeFileRepository.findOne({
@@ -111,7 +112,7 @@ export class OfficerSprintTestService{
     }
 
     async deleteofficersprintrecord(recordId:number,user:any,accountId:number):Promise<{message:string}>{
-        if(user?.sub){
+        if(user?.sub !== accountId){
             throw new UnauthorizedException('Unauthorized Access')
         }
         const profile = await this.officeFileRepository.findOne({
