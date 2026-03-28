@@ -1,19 +1,19 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from "typeorm";
 import { officerprofile } from "./officerprofile.entity";
 
-@Entity('officer300msprint')
+@Entity('sprint_300m_test')
 export class officer300msprint {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    officerprofile_id: number;
-
-    @Column()
-    age: number;
+    officer_id: number;
 
     @Column({ length: 100 })
     gender: string;
+
+    @Column()
+    age: number;
 
     @Column()
     minutes: number;
@@ -22,9 +22,9 @@ export class officer300msprint {
     seconds: number;
 
     @Column({ length: 100 })
-    month_taken: string;
+    test_date: string;
 
     @OneToOne(() => officerprofile, (profile: officerprofile) => profile.officer300msprint)
-    @JoinColumn({ name: 'officerprofile_id' })
+    @JoinColumn({ name: 'officer_id' })
     officerprofile: officerprofile;
 }
