@@ -4,6 +4,7 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { Repository } from 'typeorm';
 import { officerprofile } from 'src/entities/officerprofile.entity';
 import { officer300msprint } from "src/entities/officer300msprint.entity";
+import { Update300mTestDto } from "src/300m_test_Dto/update.300.test.dto";
 
 @Injectable()
 export class OfficerSprintTestService{
@@ -83,5 +84,54 @@ export class OfficerSprintTestService{
         return sprintRecord;
     }
 
+    async updateofficersprintrecord(updateDto:Update300mTestDto,accountId:number,recordId:number,user:any):Promise<{message:string}>{
+        if(user?.sub){
+            throw new UnauthorizedException('Unauthorized Access')
+        }
+        const profile = await this.officeFileRepository.findOne({
+            where:{officer_account_id:accountId}
+        })
 
+        if(!profile){
+            throw new NotFoundException('Account not found');
+        }
+
+        const profileId = profile.id;
+        const sprintRecord = await this.officerSprintTestRepository.findOne({
+            where:{id:recordId,officer_id:profileId}
+        })
+        if(!sprintRecord){
+            throw new NotFoundException('Record Not Found')
+        }
+        Object.assign(sprintRecord,updateDto);
+        await this.officerSprintTestRepository.save(sprintRecord);
+        return{
+            message:'Updated the sprint record successfully'
+        }
+    }
+
+    async deleteofficersprintrecord(recordId:number,user:any,accountId:number):Promise<{message:string}>{
+        if(user?.sub){
+            throw new UnauthorizedException('Unauthorized Access')
+        }
+        const profile = await this.officeFileRepository.findOne({
+            where:{officer_account_id:accountId}
+        })
+
+        if(!profile){
+            throw new NotFoundException('Account not found');
+        }
+
+        const profileId = profile.id;
+        const sprintRecord = await this.officerSprintTestRepository.findOne({
+            where:{id:recordId,officer_id:profileId}
+        })
+        if(!sprintRecord){
+            throw new NotFoundException('Record Not Found')
+        }
+        await this.officerSprintTestRepository.delete(sprintRecord)
+        return{
+            message:'Deleted the Sprint Record successfully'
+        }
+    }
 }
