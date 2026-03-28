@@ -42,5 +42,46 @@ export class OfficerSprintTestService{
         }
     }
 
+    async getofficersprintrecords(accountId:number,user:any):Promise<officer300msprint[]>{
+        if(user?.sub !== accountId){
+            throw new  UnauthorizedException('Unauthorized Access')
+        }
+        const profile = await this.officeFileRepository.findOne({
+            where:{officer_account_id:accountId}
+        })
+        if(!profile){
+            throw new NotFoundException('Account Not Found')
+        }
+        const profileId = profile.id;
+        const sprintRecord = await this.officerSprintTestRepository.find({
+            where:{officer_id:profileId},
+            order:{test_date:'DESC'}
+        })
+
+        return sprintRecord;
+    }
+
+    async getspecificsprintrecord(recordId:number,accountId:number,user:any):Promise<officer300msprint>{
+        if(user?.sub){
+            throw new UnauthorizedException('Unauthorized Access')
+        }
+        const profile = await this.officeFileRepository.findOne({
+            where:{officer_account_id:accountId}
+        })
+
+        if(!profile){
+            throw new NotFoundException('Account not found');
+        }
+
+        const profileId = profile.id;
+        const sprintRecord = await this.officerSprintTestRepository.findOne({
+            where:{id:recordId,officer_id:profileId}
+        })
+        if(!sprintRecord){
+            throw new NotFoundException('Record Not Found')
+        }
+        return sprintRecord;
+    }
+
 
 }
