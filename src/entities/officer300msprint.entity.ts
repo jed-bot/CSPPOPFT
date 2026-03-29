@@ -21,6 +21,9 @@ export class officer300msprint {
     @Column()
     seconds: number;
 
+    @Column()
+    grade:string;
+
     @Column({ length: 100 })
     test_date: string;
 

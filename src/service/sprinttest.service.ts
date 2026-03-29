@@ -1,10 +1,10 @@
 import { InjectRepository } from "@nestjs/typeorm";
-import { Create300mTestDto } from "src/300m_test_Dto/create.300.test.dto";
+import { Create300mTestDto } from "src/300m_test_dto/create.300m.test.dto";
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { officerprofile } from 'src/entities/officerprofile.entity';
 import { officer300msprint } from "src/entities/officer300msprint.entity";
-import { Update300mTestDto } from "src/300m_test_Dto/update.300.test.dto";
+import { Update300mTestDto } from "src/300m_test_dto/update.300m.test.dto";
 
 @Injectable()
 export class OfficerSprintTestService{

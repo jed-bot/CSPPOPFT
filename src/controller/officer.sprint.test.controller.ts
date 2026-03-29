@@ -1,9 +1,9 @@
 import {Controller,Get,Post,Body,UseGuards,Put,Request,Param, Delete} from '@nestjs/common';
 import { OfficerAccountService } from 'src/service/officer.account.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Create300mTestDto} from 'src/300m_test_Dto/create.300.test.dto';
+import { Create300mTestDto } from 'src/300m_test_dto/create.300m.test.dto';
 import { OfficerSprintTestService } from '../service/sprinttest.service';
-import { Update300mTestDto } from 'src/300m_test_Dto/update.300.test.dto';
+import { Update300mTestDto } from 'src/300m_test_dto/update.300m.test.dto';
 @Controller()
 export class OfficerSprintTestController{
     constructor(

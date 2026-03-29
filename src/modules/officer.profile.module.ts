@@ -15,12 +15,15 @@ import { OfficerPftTestService } from "src/service/officer.pft.test.service";
 import { officer300msprint } from "src/entities/officer300msprint.entity";
 import { OfficerSprintTestController } from "src/controller/officer.sprint.test.controller";
 import { OfficerSprintTestService } from "../service/sprinttest.service";
+import { walktest } from "src/entities/officer.walk.test.entity";
+import { OfficerWalkTestService } from "src/service/walk.test.service";
+import { OfficerWalktestController } from "src/controller/officer.walk.test.controller";
 
 @Module({
     imports:[
 
         ConfigModule.forRoot({isGlobal:true}),
-        TypeOrmModule.forFeature([officeraccount,officerbmi,officer1minpushup,officer1minpushup,officer300msprint]),
+        TypeOrmModule.forFeature([officeraccount,officerbmi,officer1minpushup,officer1minpushup,officer300msprint,walktest]),
         PassportModule.register({defaultStrategy:'jwt'}),
         JwtModule.register({
             secret:process.env.JWT_SECRET,
@@ -32,12 +35,15 @@ import { OfficerSprintTestService } from "../service/sprinttest.service";
         OfficerProfileController,
         OfficerAccountController,
         OfficerSprintTestController,
+        OfficerWalktestController
+
     ],
     providers:[
         OfficerAccountService,
         OfficerProfileService,
         OfficerPftTestService,
         OfficerSprintTestService,
+        OfficerWalkTestService,
         JwtStrategy
     ]
 })
