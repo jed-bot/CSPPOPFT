@@ -26,12 +26,12 @@ export class OfficerWalktestController{
     @UseGuards(AuthGuard('jwt'))
     @Put('auth/officer/update_walkrecord/:id')
     async updateOfficerwalkTestRecod(@Request()req,@Param('id') id:number,@Body() updateDto:UpdateOfficerWalkDto){
-        return this.OfficerWalkTestService.updateofficerwalktest(req.user.sub,id,req.user,updateDto);
+        return this.OfficerWalkTestService.updateofficerwalktest(updateDto,req.user.sub,id,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Delete('auth/officer/delete_walkrecord/:id')
     async deleteOfficerWalkTestRecord(@Request()req,@Param('id') id:number){
-        return this.OfficerWalkTestService.deletewalkrecord(req.user.sub,id,req.user);
+        return this.OfficerWalkTestService.deletewalkrecord(id,req.user.sub,req.user);
     }
 }

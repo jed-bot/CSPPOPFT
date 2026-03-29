@@ -136,7 +136,7 @@ export class OfficerWalkTestService{
         if(!walkrecord){
             throw new NotFoundException('Record Not Found')
         }
-        await this.officerWalkTestRepository.delete(walkrecord)
+        await this.officerWalkTestRepository.delete(recordId)
         return{
             message:'Deleted the record successfully'
         }

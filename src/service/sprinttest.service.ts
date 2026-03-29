@@ -130,7 +130,7 @@ export class OfficerSprintTestService{
         if(!sprintRecord){
             throw new NotFoundException('Record Not Found')
         }
-        await this.officerSprintTestRepository.delete(sprintRecord)
+        await this.officerSprintTestRepository.delete(recordId)
         return{
             message:'Deleted the Sprint Record successfully'
         }
