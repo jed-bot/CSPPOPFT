@@ -26,7 +26,15 @@ import { OfficerWalktestController } from "src/controller/officer.walk.test.cont
 
     imports:[
         ConfigModule.forRoot({isGlobal:true}),
-        TypeOrmModule.forFeature([administrator,officeraccount,officerprofile,officerbmi,officer1minpushup,officersitup1min,officer300msprint,walktest]),
+        TypeOrmModule.forFeature([
+            administrator,
+            officeraccount,
+            officerprofile,
+            officerbmi,
+            officer1minpushup,
+            officersitup1min,
+            officer300msprint,
+            walktest]),
         JwtModule.registerAsync({  // ← Change to registerAsync
             imports: [ConfigModule],
             inject: [ConfigService],

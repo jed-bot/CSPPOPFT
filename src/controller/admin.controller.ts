@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe,Post,Body,ValidationPipe,Put ,UseGuards,Patch,Request,Delete, Req} from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe,Post,Body,ValidationPipe,Put ,UseGuards,Patch,Request,Delete, Req, ParseArrayPipe} from '@nestjs/common';
 import { AdminService } from '../service/admin.service';
 import { CreateAdminDto } from 'src/admin_dto/create.admin.dto';
 import { LoginAdminDto } from 'src/admin_dto/login.admin.dto';
@@ -9,12 +9,17 @@ import { AuthGuard } from '@nestjs/passport';
 import { UpdateOfficerStatus } from 'src/officer_account_dto/update.officer.profile.dto';
 import { UpdateAdminInfoDto } from 'src/admin_dto/update.admin.info';
 import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.profile.dto';
+import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
+import { OfficerAccountService } from 'src/service/officer.account.service';
 
 
 @Controller()
 export class AdminController{
 
-    constructor(private readonly adminService: AdminService){}
+    constructor(
+        private readonly adminService: AdminService,
+        private readonly OfficerProfileService:OfficerAccountService,
+    ){}
 
 
        // get admin info with bearer token
@@ -85,26 +90,27 @@ export class AdminController{
             }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/getallofficer_profile')
-        async getallofficerprofile(@Request()req){
-            return this.adminService.getallofficerprofile(req.user.sub);
+        @Get('auth/admin/officerprofile')
+        async getallofficerpofile(@Request()req){
+            return this.OfficerProfileService.getallofficerprofile(req.user.sub)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/offcer_profile/:id')
-        async getofficerprofileid(@Request()req, @Param('id') id:number){
-            return this.adminService.getofficerprofilebyid(req.user.sub,id)
+        @Get ('auth/admin/officerprofile/:id')
+        async getofficerprofilebyid(@Request()req,@Param('id')id:number){
+            return this.OfficerProfileService.getofficerprofilebyid(req.user.sub,id)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Put ('auth/admin/updateofficerprofile/:id')
-        async updateofficerprofile(@Request()req,@Param('id') id:number,updateofficerprofileDto:UpdateOfficerProfileDto){
-            return this.adminService.updateofficerprofile(updateofficerprofileDto,id,req.user.sub,req.user);
+        @Put ('auth/admin/editofficerprofile/:id')
+        async updateofficerprofile(@Request()req,@Body()updateofficerpfdto:UpdateOfficerProfileDto,@Param('id')id:number){
+            return this.OfficerProfileService.UpdateOfficerProfile(req.user.sub,updateofficerpfdto,id)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Delete('auth/admin/officer/deleteofficerprofile/:id')
-        async deleteofficerprofile(@Request()req,@Param('id') id:number){
-            return this.adminService.deleteofficerprofile(req.user.sub,req.user);
+        @Delete('auth/admin/deleteofficerprofile/:id')
+        async deleteofficerprofile(@Request()req,@Param('id')id:number){
+            return this.OfficerProfileService.deleteofficerprofile(req.user.sub,id)
         }
-}
+      
+}   

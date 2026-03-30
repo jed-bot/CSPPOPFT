@@ -19,11 +19,12 @@ import { OfficerSprintTestService } from "../service/sprinttest.service";
 import { walktest } from "src/entities/officer.walk.test.entity";
 import { OfficerWalkTestService } from "src/service/walk.test.service";
 import { OfficerWalktestController } from "src/controller/officer.walk.test.controller";
+import { administrator } from "src/entities/administrator.entity";
 @Module({
     imports:[
 
         ConfigModule.forRoot({isGlobal:true}),
-        TypeOrmModule.forFeature([officeraccount,officerprofile,officerbmi,officer1minpushup,officersitup1min,officer300msprint,walktest]),
+        TypeOrmModule.forFeature([administrator,officeraccount,officerprofile,officerbmi,officer1minpushup,officersitup1min,officer300msprint,walktest]),
         JwtModule.register({
             secret:process.env.JWT_SECRET,
             signOptions:{expiresIn:'1h'},
