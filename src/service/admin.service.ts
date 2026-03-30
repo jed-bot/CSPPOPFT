@@ -14,8 +14,8 @@ import { DeleteAdminDto } from 'src/admin_dto/delete.admin.dto';
 import { AdminStatusDto } from 'src/admin_dto/status.admin';
 import { UpdateOfficerStatus } from 'src/officer_account_dto/update.officer.profile.dto';
 import{officeraccount} from 'src/entities/officeraccount.entity';
-import { OfficerAccountService } from 'src/service/officer.account.service';
-import { DeleteOfficerProfileDto } from 'src/officer_profile_dto/delete.officer.profile.dto';
+import { officerprofile } from 'src/entities/officerprofile.entity';
+import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.profile.dto';
 
 
 @Injectable()
@@ -26,6 +26,8 @@ import { DeleteOfficerProfileDto } from 'src/officer_profile_dto/delete.officer.
     private readonly jwtService:JwtService,
     @InjectRepository(officeraccount)
     private officerAccountRepo: Repository<officeraccount>, 
+    @InjectRepository(officerprofile)
+    private readonly officerPrfileRepo:Repository<officerprofile>
   ) {}
 
   async createAdmin(createAdminDto:CreateAdminDto):Promise<Partial<administrator>>{
@@ -262,5 +264,95 @@ import { DeleteOfficerProfileDto } from 'src/officer_profile_dto/delete.officer.
       }
       return officerAccount;
     }
-}
-  
+
+    async getallofficerprofile(user:any):Promise<officerprofile[]>{
+      if(user?.sub !== user.id){
+        throw new UnauthorizedException('Unauthorized access')
+      }
+
+      const profileId = user.id;
+      const profile = await this.adminRepo.findOne({
+        where:{id:profileId}
+      })
+
+      if(!profile){
+        throw new NotFoundException('Admin Account not Found')
+      }
+
+      const officerprofiles = await this.officerPrfileRepo.find()
+      return officerprofiles;
+    }
+
+    async getofficerprofilebyid(profileId:number,user:any):Promise<officerprofile>{
+      if(user?.sub !== user.id){
+        throw new UnauthorizedException('Unauthorized access')
+      }
+      const adminId = user.id;
+      const admin =  await this.adminRepo.findOne({
+        where:{id:user.id}
+      }) 
+    
+      if(!admin){
+        throw new NotFoundException('Account not found')
+      }
+      const officerprofile = await this.officerPrfileRepo.findOne({
+        where:{id:profileId}
+      })
+      if(!officerprofile){
+        throw new NotFoundException('Officer Profile Not Found')
+      }
+      return officerprofile;
+  }
+  async updateofficerprofile(updateofficerprofiledto:UpdateOfficerProfileDto,accountId:number,officerId:number,user:any):Promise<{message:string}>{
+    if(user?.sub !== accountId){
+      throw new UnauthorizedException('Unauthorized access')
+    }
+
+    const admin = await this.adminRepo.findOne({
+      where:{id:accountId}
+    })
+
+    if(!admin){
+      throw new NotFoundException('Account not found')
+    }
+    const officerAccount = await this.officerPrfileRepo.findOne({
+      where:{id:officerId}
+    })
+
+    if(!officerAccount){
+      throw new NotFoundException('Officer profile not Found')
+    }
+
+    Object.assign(officerAccount,updateofficerprofiledto);
+    await this.officerPrfileRepo.save(officerAccount);
+
+    return{
+      message:"Updated the officer profile Succcessfully"
+    }
+  }
+
+  async deleteofficerprofile(user:any,officerId:number):Promise<{message:string}>{
+    if(user?.sub !== user.id){
+      throw new UnauthorizedException('Unauthorized Access')
+    }
+
+    const admin = await this.adminRepo.findOne({
+      where:{id:user.id}
+    })
+    if(!admin){
+      throw new NotFoundException('Account not found')
+    }
+    const officcerAccount = await this.officerPrfileRepo.findOne({
+      where:{id:officerId,}
+    })
+    if(!officeraccount){
+      throw new NotFoundException('Account Not Found');
+    }
+    await this.officerPrfileRepo.delete(officerId)
+
+    return{
+      message:'Deleted the profile successfully'
+    }
+  }
+
+}  
