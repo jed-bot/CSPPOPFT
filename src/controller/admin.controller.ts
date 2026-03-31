@@ -152,7 +152,7 @@ export class AdminController{
         @UseGuards(AuthGuard('jwt'))
         @Get ('auth/admin/officer/pushuprecord')
         async getallofficerpushuprecord(@Request()req){
-            return this.OfficerBmiSevice.getallpushuprecord(req.user.sub)
+            return this.OfficerBmiSevice.getallpushuprecord(req.user.sub,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))

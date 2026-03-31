@@ -264,23 +264,22 @@ async createOfficer1minPushup(
 
 }
 
-    async getallpushuprecord(user:any):Promise<officer1minpushup[]>{
-        if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized access')
-        }
-
-        const admin = await this.adminRepository.findOne({
-            where:{id:user.sub}
-        })
-
-        if(!admin){
-            throw new NotFoundException('Admin Account not found')
-        }
-
-
-        const pushupRecord = await this.pushUpRepository.find()
-        return pushupRecord;
+    async getallpushuprecord(adminId: number, user: any): Promise<officer1minpushup[]> {
+    if (user?.sub !== adminId) {
+        throw new UnauthorizedException('Unauthorized access');
     }
+
+    const admin = await this.adminRepository.findOne({
+        where: { id: adminId }
+    });
+
+    if (!admin) {
+        throw new NotFoundException('Admin account not found');
+    }
+
+    const pushupRecord = await this.pushUpRepository.find();
+    return pushupRecord;
+}
 
 
 
