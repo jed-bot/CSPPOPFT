@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { officerprofile } from 'src/entities/officerprofile.entity';
 import { InjectRepository } from "@nestjs/typeorm";
 import { UpdateOfficerWalkDto } from "src/walk_test_dto/update.officer.walk.test.dto";
+import { administrator } from "src/entities/administrator.entity";
 
 @Injectable()
 export class OfficerWalkTestService{
@@ -12,7 +13,9 @@ export class OfficerWalkTestService{
         @InjectRepository(officerprofile)
         private readonly officerProfileRepository:Repository<officerprofile>,
         @InjectRepository(walktest)
-        private readonly officerWalkTestRepository:Repository<walktest>
+        private readonly officerWalkTestRepository:Repository<walktest>,
+        @InjectRepository(administrator)
+        private readonly adminRepository:Repository<administrator>
     ){}
 
 
@@ -42,6 +45,50 @@ export class OfficerWalkTestService{
         return{
             message:'Created Successfulyy'
         }
+    }
+
+    async getallofficerwalkrecord(user:any):Promise<walktest[]>{
+         if(!user?.sub){
+            throw new UnauthorizedException('Unauthorized Access')
+        }
+
+        const admin = await this.adminRepository.findOne({
+            where:{id:user.sub}
+        })
+
+        if(!admin){
+            throw new NotFoundException('Admin Not found')
+        }
+        
+        const records = await this.officerWalkTestRepository.find()
+
+        return records
+
+    }
+
+    async getofficerwalkrecordbyid(user:any,recordId):Promise<walktest>{
+         if(!user?.sub){
+            throw new UnauthorizedException('Unauthorized Access')
+        }
+
+        const admin = await this.adminRepository.findOne({
+            where:{id:user.sub}
+        })
+
+        if(!admin){
+            throw new NotFoundException('Admin Not found')
+        }
+
+        const record = await this.officerWalkTestRepository.findOne({
+            where:{id:recordId}
+        })
+
+        if(!record){
+            throw new NotFoundException('Record not found')
+        }
+
+        return record;
+
     }
 
     async getofficerwalktestrecords(accountId:number,user:any):Promise<walktest[]>{
@@ -90,6 +137,35 @@ export class OfficerWalkTestService{
         return record;
     }
 
+    async updateofficerwalktestbyadmin(user:any,updateDto:UpdateOfficerWalkDto,recordId:number):Promise<{message:string}>{
+         if(!user?.sub){
+                    throw new UnauthorizedException('Unauthorized Access')
+                }
+        
+                const admin = await this.adminRepository.findOne({
+                    where:{id:user.sub}
+                })
+        
+                if(!admin){
+                    throw new NotFoundException('Admin Not found')
+                }
+        
+                const record = await this.officerWalkTestRepository.findOne({
+                    where:{id:recordId}
+                })
+        
+                if(!record){
+                    throw new NotFoundException('Record not found')
+                }
+
+                Object.assign(record,updateDto)
+                await this.officerWalkTestRepository.save(record)
+                return{
+                    message:'Updated successfully'
+                }
+        
+    }
+
     async updateofficerwalktest(UpdateDto:UpdateOfficerWalkDto,accountId:number,recordId:number,user:any):Promise<{message:string}>{
         if(user?.sub !== accountId){
             throw new UnauthorizedException('Unauthorized Access')
@@ -116,6 +192,34 @@ export class OfficerWalkTestService{
         }
     }
 
+
+    async deletebyAdmin(user:any,recordId:number):Promise<{message:string}>{
+         if(!user?.sub){
+            throw new UnauthorizedException('Unauthorized Access')
+        }
+
+        const admin = await this.adminRepository.findOne({
+            where:{id:user.sub}
+        })
+
+        if(!admin){
+            throw new NotFoundException('Admin Not found')
+        }
+
+        const record = await this.officerWalkTestRepository.findOne({
+            where:{id:recordId}
+        })
+
+        if(!record){
+            throw new NotFoundException('Record not found')
+        }
+
+        await this.officerWalkTestRepository.delete(recordId);
+        return{
+            message:'Deleted successfully'
+        }
+
+    }
     async deletewalkrecord(recordId:number,accountId:number,user:any):Promise<{message:string}>{
         if(user?.sub !== accountId){
             throw new UnauthorizedException('Unauthorized Access')

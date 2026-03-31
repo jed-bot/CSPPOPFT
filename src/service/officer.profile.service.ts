@@ -61,47 +61,44 @@ export class OfficerProfileService{
     };
 }
 
-    async getallofficerbmi(user:any):Promise<officerbmi[]>{
-        if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized access')
-        }
-        const admin = await this.adminRepository.findOne({
-            where:{id:user.sub}
-        })
+    async getallofficerbmi(adminId: number): Promise<officerbmi[]> {
+    
+    const admin = await this.adminRepository.findOne({
+        where: { id: adminId }
+    });
 
-        if(!admin){
-            throw new NotFoundException('Admin Account not found')
-        }
-
-        const officerbmi = await this.officerBmiRepository.find()
-         
-        return officerbmi;
-
+    if (!admin) {
+        throw new NotFoundException('Admin account not found');
     }
 
+    // For admin, just return ALL BMI records
+    const officerBmiRecords = await this.officerBmiRepository.find({
+        // Include officer profile if needed
+    });
+    
+    return officerBmiRecords;
+}
 
-    async getofficerbmirecordbyid(bmiId:number,user:any):Promise<officerbmi>{
-        if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized access')
-        }
-        const admin =await this.adminRepository.findOne({
-            where:{id:user.sub}
-        })
 
-        if(!admin){
-            throw new NotFoundException('Admin Acount not found')
-        }
+ async getofficerbmirecordbyid(bmiId: number, adminId: number): Promise<officerbmi> {
+    const admin = await this.adminRepository.findOne({
+        where: { id: adminId }
+    });
 
-        const bmiRecord = await this.officerBmiRepository.findOne({
-            where:{id:bmiId}
-        })
-        if (!bmiRecord){
-            throw new NotFoundException('Offocer Bmi Record not found')
-        }
-
-        return bmiRecord;
-
+    if (!admin) {
+        throw new NotFoundException('Admin account not found');
     }
+
+    const officerBmiRecord = await this.officerBmiRepository.findOne({
+        where: { id: bmiId }
+    });
+
+    if (!officerBmiRecord) {
+        throw new NotFoundException(`BMI record with ID ${bmiId} not found`);
+    }
+
+    return officerBmiRecord;
+}
 
    async getOfficerBmi(accountId: number, user: any): Promise<officerbmi[]> {  
     if (user?.sub !== accountId) {
@@ -125,6 +122,57 @@ export class OfficerProfileService{
     return bmiRecords;
 }
 
+
+async updateofficerbmi(bmiId:number,adminId:number,updateDto:UpdateOfficerBmiDto,user:any):Promise<{message:string}>{
+    if(user?.sub !== adminId){
+        throw new UnauthorizedException('Unauthorized Access')
+    }
+
+    const admin = await this.adminRepository.findOne({
+        where:{id:adminId}
+    })
+    if(!admin){
+     throw new NotFoundException('Admin Account is not Found')
+    }
+
+    const bmirecord = await this.officerBmiRepository.findOne({
+        where:{id:bmiId}
+    })
+
+    if(!bmirecord){
+        throw new NotFoundException('Record not Found')
+    }
+    Object.assign(bmirecord,updateDto)
+    await this.officerBmiRepository.save(bmirecord)
+    return{
+        message:'Updated successfully'
+    }
+}
+
+async deletbmibyadmin(recordId:number,adminId:number,user:any):Promise<{message:string}>{
+    if(user?.sub !== adminId){
+        throw new UnauthorizedException('Unauthorized access')
+    }
+
+    const admin = await this.adminRepository.findOne({
+        where:{id:adminId}
+    })
+    if(!admin){
+        throw new NotFoundException('Admin Account not found')
+    }
+
+    const record = await this.officerBmiRepository.findOne({
+        where:{id:recordId}
+    })
+    if(!record){
+        throw new NotFoundException('Bmi record not found')
+    }
+
+    await this.officerBmiRepository.delete(recordId)
+    return{
+        message:'Deleted the bmi successfully'
+    }
+}
 async updateOfficerBmi(bmiRecordId:number,updateOfficerBmiDto:UpdateOfficerBmiDto,accountId:number,user:any):Promise<{message:string}>{
     if(user?.sub !== accountId){
         throw new UnauthorizedException('Unauthorized access');

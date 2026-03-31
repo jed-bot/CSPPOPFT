@@ -5,6 +5,7 @@ import {officersitup1min} from 'src/entities/officersitup1min.entity';
 import { CreateSitUpDto } from 'src/officer_situp_1min/create.officer.1minsitup.dto';
 import { Repository } from 'typeorm';
 import { UpdateSitUpDto } from 'src/officer_situp_1min/update.officer.1minsitup.dto';
+import { administrator } from 'src/entities/administrator.entity';
 
 @Injectable()
 export class OfficerPftTestService{
@@ -13,6 +14,8 @@ export class OfficerPftTestService{
         private readonly officersitupTest: Repository<officersitup1min>,
         @InjectRepository(officerprofile)
         private readonly officerProfileRepository:Repository<officerprofile>,
+        @InjectRepository(administrator)
+        private readonly AdminRepository:Repository<administrator>,
     ){}
     async createofficer1minstup(createDto:CreateSitUpDto,accountId:number,user:any ):Promise<{message:string}>{
         if(user?.sub !== accountId){
@@ -73,6 +76,23 @@ export class OfficerPftTestService{
             throw new NotFoundException('Record not found')
         }
         return sitUpRecord;
+    }
+
+    async getallofficersituprecord(user:any):Promise<officersitup1min[]>{
+        if(!user?.sub){
+            throw new UnauthorizedException('Unauthorized access')
+        }
+
+        const adminId = await this.AdminRepository.findOne({
+            where:{id:user.sub}
+        })
+
+        if(!adminId){
+            throw new NotFoundException('Admin Account not Found')
+        }
+
+        const situprecord = await this.officersitupTest.find()
+        return situprecord;
     }
 
     async updateOfficersitupRecord(updatesitUpDto:UpdateSitUpDto,recordId:number,accountId:number,user:any):Promise<{message:string}>{
