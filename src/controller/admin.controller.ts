@@ -11,6 +11,7 @@ import { UpdateAdminInfoDto } from 'src/admin_dto/update.admin.info';
 import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.profile.dto';
 import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
 import { OfficerAccountService } from 'src/service/officer.account.service';
+import { OfficerProfileService } from 'src/service/officer.profile.service';
 
 
 @Controller()
@@ -19,6 +20,7 @@ export class AdminController{
     constructor(
         private readonly adminService: AdminService,
         private readonly OfficerProfileService:OfficerAccountService,
+        private readonly OfficerBmiSevice:OfficerProfileService
     ){}
 
 
@@ -111,6 +113,36 @@ export class AdminController{
         @Delete('auth/admin/deleteofficerprofile/:id')
         async deleteofficerprofile(@Request()req,@Param('id')id:number){
             return this.OfficerProfileService.deleteofficerprofile(req.user.sub,id)
+        }
+
+        @UseGuards(AuthGuard('jwt'))
+        @Get ('auth/admin/officer/getofficerbmi')
+        async getallofficerbmi(@Request()req ){
+            return this.OfficerBmiSevice.getallofficerbmi(req.user.sub,)
+        }
+
+        @UseGuards(AuthGuard('jwt'))
+        @Get ('auth/admin/officer/getofficerbmi/:id')
+        async getofficerbmibyid(@Request()req,@Param('id') id:number){
+            return this.OfficerBmiSevice.getofficerbmirecordbyid(req.user.sub,id)
+        }
+
+        @UseGuards(AuthGuard('jwt'))
+        @Put('auth/admin/officer/updateofficerbmi/:id')
+        async updateofficerbmireocrd(@Request()req,@Param('id')id:number,updateofficerbmidto:UpdateOfficerBmiDto){
+            return this.OfficerBmiSevice.updateOfficerBmi(req.user.sub,updateofficerbmidto,req.user,id)
+        }
+
+        @UseGuards(AuthGuard('jwt'))
+        @Delete('auth/admin/officer/deleteofficerbmi/:id')
+        async deleteofficerbmi(@Request()req,@Param('id')id:number){
+            return this.OfficerBmiSevice.deleteOfficerBmi(req.user.sub,req.user,id)
+        }
+
+        @UseGuards(AuthGuard('jwt'))
+        @Get ('auth/admin/officerpushuprecord')
+        async getallofficerpushuprecord(@Request()req){
+            return this.OfficerBmiSevice.getallpushuprecord(req.user.sub)
         }
       
 }   

@@ -17,6 +17,7 @@ import { CreateOfficer1minPushupDto } from 'src/officer1min_push_dto/create.1min
 import { officer1minpushup } from 'src/entities/officer1minpushup.entity';
 import { profile } from 'console';
 import { UpdateOfficer1minPushupDto } from 'src/officer1min_push_dto/update.1min.pushup';
+import { administrator } from 'src/entities/administrator.entity';
 
 @Injectable()
 export class OfficerProfileService{
@@ -30,7 +31,10 @@ export class OfficerProfileService{
         private officerBmiRepository:Repository<officerbmi>,
 
         @InjectRepository(officer1minpushup)
-        private pushUpRepository: Repository<officer1minpushup>
+        private pushUpRepository: Repository<officer1minpushup>,
+
+        @InjectRepository(administrator)
+        private adminRepository:Repository<administrator>
     ){}
 
 
@@ -56,6 +60,48 @@ export class OfficerProfileService{
         message: 'Added the BMI Successfully'
     };
 }
+
+    async getallofficerbmi(user:any):Promise<officerbmi[]>{
+        if(!user?.sub){
+            throw new UnauthorizedException('Unauthorized access')
+        }
+        const admin = await this.adminRepository.findOne({
+            where:{id:user.sub}
+        })
+
+        if(!admin){
+            throw new NotFoundException('Admin Account not found')
+        }
+
+        const officerbmi = await this.officerBmiRepository.find()
+         
+        return officerbmi;
+
+    }
+
+
+    async getofficerbmirecordbyid(bmiId:number,user:any):Promise<officerbmi>{
+        if(!user?.sub){
+            throw new UnauthorizedException('Unauthorized access')
+        }
+        const admin =await this.adminRepository.findOne({
+            where:{id:user.sub}
+        })
+
+        if(!admin){
+            throw new NotFoundException('Admin Acount not found')
+        }
+
+        const bmiRecord = await this.officerBmiRepository.findOne({
+            where:{id:bmiId}
+        })
+        if (!bmiRecord){
+            throw new NotFoundException('Offocer Bmi Record not found')
+        }
+
+        return bmiRecord;
+
+    }
 
    async getOfficerBmi(accountId: number, user: any): Promise<officerbmi[]> {  
     if (user?.sub !== accountId) {
@@ -167,8 +213,51 @@ async createOfficer1minPushup(
     return {
         message: '1-Minute Pushup record added successfully'
     };
+
 }
 
+    async getallpushuprecord(user:any):Promise<officer1minpushup[]>{
+        if(!user?.sub){
+            throw new UnauthorizedException('Unauthorized access')
+        }
+
+        const admin = await this.adminRepository.findOne({
+            where:{id:user.sub}
+        })
+
+        if(!admin){
+            throw new NotFoundException('Admin Account not found')
+        }
+
+
+        const pushupRecord = await this.pushUpRepository.find()
+        return pushupRecord;
+    }
+
+
+
+    async getofficerpushrecordbyid(recordId:number,user:any):Promise<officer1minpushup>{
+        if(!user?.sub){
+            throw new UnauthorizedException('Unauthorized access')
+        }
+
+        const admin = await this.adminRepository.findOne({
+            where:{id:user.sub}
+        })
+
+        if(!admin){
+            throw new NotFoundException('Admin Account not found')
+        }
+        const pushuprecord = await this.pushUpRepository.findOne({
+            where:{id:recordId}
+        })
+
+        if(!pushuprecord){
+            throw new NotFoundException('Office Record Not Found')
+        }
+
+        return pushuprecord;
+    }
     async getOfficer1minPushup(accountId:number,user:any):Promise<{officer1minpushup: any[]}>{
         if(user?.sub !== accountId){
             throw new UnauthorizedException('Unauthorized access');
