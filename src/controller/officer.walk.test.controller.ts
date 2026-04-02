@@ -5,32 +5,32 @@ import { Create2kmTestDto } from 'src/walk_test_dto/create.walk.test.dto';
 import { UpdateOfficerWalkDto } from 'src/walk_test_dto/update.officer.walk.test.dto';
 import { OfficerWalkTestService } from 'src/service/walk.test.service';
 
-@Controller()
+@Controller('auth/officer')
 export class OfficerWalktestController{
     constructor(
         private readonly OfficerWalkTestService: OfficerWalkTestService
     ){}Create2kInfoTestDto
 
     @UseGuards(AuthGuard('jwt'))
-    @Post('auth/officer/create_walktest')
+    @Post('/create_walktest')
     async createOfficerWalkTest(@Request()req,@Body()CreateDto:Create2kmTestDto){
         return this.OfficerWalkTestService.createofficerwalktest(CreateDto,req.user.sub,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('auth/officer/get_walktest_record')
+    @Get('/get_walktest_record')
     async getOfficerWalkTestRecord(@Request()req){
         return this.OfficerWalkTestService.getofficerwalktestrecords(req.user.sub,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Put('auth/officer/update_walkrecord/:id')
+    @Put('/update_walkrecord/:id')
     async updateOfficerwalkTestRecod(@Request()req,@Param('id') id:number,@Body() updateDto:UpdateOfficerWalkDto){
         return this.OfficerWalkTestService.updateofficerwalktest(updateDto,req.user.sub,id,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Delete('auth/officer/delete_walkrecord/:id')
+    @Delete('/delete_walkrecord/:id')
     async deleteOfficerWalkTestRecord(@Request()req,@Param('id') id:number){
         return this.OfficerWalkTestService.deletewalkrecord(id,req.user.sub,req.user);
     }

@@ -35,15 +35,17 @@ import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto'
   ) {}
 
   async createAdmin(createAdminDto:CreateAdminDto):Promise<Partial<administrator>>{
-    try{
-        const existingAdmin = await this.adminRepo.findOne({
-          where:{
-            email:createAdminDto.email
-          }
+    const existingAdmin = await this.adminRepo.findOne({
+          where:[
+            {email:createAdminDto.email},
+            {user_name:createAdminDto.user_name}
+          ]
         });
         if(existingAdmin){
           throw new ConflictException('Admin with this email already exsists');
         }
+    
+
 
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(createAdminDto.password, saltRounds);
@@ -57,15 +59,13 @@ import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto'
           status:createAdminDto.status,
         });
        
+
+      
         const saveAdmin = await this.adminRepo.save(newAdmin);
         
         const{password,...result} = saveAdmin;
        
         return result;
-    }catch(error){
-    
-    throw error;
-  }
 
   }
 

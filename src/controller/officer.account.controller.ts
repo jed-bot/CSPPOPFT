@@ -16,7 +16,7 @@ import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto'
 import { CreateOfficer1minPushupDto } from 'src/officer1min_push_dto/create.1min.psuhup.dto';
 import { UpdateOfficer1minPushupDto } from 'src/officer1min_push_dto/update.1min.pushup';
 
-@Controller()
+@Controller('auth/officer')
 export class OfficerAccountController{
     constructor(
         private readonly officerAccountService: OfficerAccountService,
@@ -24,103 +24,103 @@ export class OfficerAccountController{
     )
     {}
 
-    @Post('auth/officer/signup')
+    @Post('/signup')
     async createOfficerAccount(@Body()createOfficerAccountDto:CreateOfficerAccountDto){
         return this.officerAccountService.createOfficerAccount(createOfficerAccountDto);
     }
 
-    @Post('auth/officer/login')
+    @Post('/login')
     async loginOfficerAccount(@Body()loginOfficerAccountDto:LoginOfficerAccountDto){
         return this.officerAccountService.loginOfficerAccount(loginOfficerAccountDto);
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('auth/officer/info')
+    @Get('/info')
     async getOfficerAccountInfo(@Request()req){
         return this.officerAccountService.getOfficerAccountInfo(req.user.sub,req.user);
     }
     @UseGuards(AuthGuard('jwt'))
-    @Put('auth/officer/reset_password')
+    @Put('/reset_password')
     async resetOfficerPassword(@Request()req,@Body()forgotOfficerAccountDto:ForgotOfficerAccountDto){
         return this.officerAccountService.forgotOfficerPassword(forgotOfficerAccountDto,req.user.sub);
     }
     @UseGuards(AuthGuard('jwt'))
-    @Put('auth/officer/update_account')
+    @Put('/update_account')
     async updateOfficerAccountInfo(@Request()req,@Body()updateOfficerProfileInfoDto:UpdateOfficerAccountInfoDto){
         return this.officerAccountService.updateOfficerAccount(updateOfficerProfileInfoDto,req.user.sub,req.user);
     }
     @UseGuards(AuthGuard('jwt'))
-    @Delete('auth/officer/delete_account')
+    @Delete('/delete_account')
     async deleteOfficerAccount(@Request()req,@Body()DeleteOfficerAccountDto:DeleteOfficerAccountDto){
         return this.officerAccountService.deleteOfficerAccount(DeleteOfficerAccountDto,req.user.sub,req.user);
     }
     @UseGuards(AuthGuard('jwt'))
-    @Post('auth/officer/create_profile')
+    @Post('/create_profile')
     async createOfficerProfile(@Request()req,@Body()createOfficerProfileDto:CreateOfficerProfileDto){
         return this.officerAccountService.createofficerProfile(createOfficerProfileDto,req.user.sub,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('auth/officer/profile')
+    @Get('/profile')
     async getOfficerProfile(@Request()req){
         return this.officerAccountService.getOfficerProfile(req.user.sub,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Put('auth/officer/update_profile')
+    @Put('/update_profile')
     async udpateOfficerProfile(@Request()req, @Body()UpdateOfficerProfileDto:UpdateOfficerProfileDto){
         return this.officerAccountService.UpdateOfficerProfile(req.user.sub,UpdateOfficerProfileDto,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Delete('auth/officer/delete_profile')
+    @Delete('/delete_profile')
     async DeleteOfficerProfileDto(@Request()req,@Body()DeleteOfficerProfileDto:DeleteOfficerProfileDto){
         return this.officerAccountService.deleteOfficerProfile(DeleteOfficerProfileDto,req.user.sub,req.user)
     }
     @UseGuards(AuthGuard('jwt'))
-    @Post('auth/officer/create_bmi')
+    @Post('/create_bmi')
     async createOfficerBmi(@Request()req,@Body()createdOfficerBmiDto:CreateOfficerBmiDto){
         return this.officerProfileService.createOfficerbmi(createdOfficerBmiDto,req.user.sub,req.user)
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Get('auth/officer/bmi')
+    @Get('/bmi')
     async getOfficerBmi(@Request()req){
         return this.officerProfileService.getOfficerBmi(req.user.sub,req.user)
     }
 
     // adding a new method 
     @UseGuards(AuthGuard('jwt'))
-    @Put('auth/officer/update_bmi/:id')
+    @Put('/update_bmi/:id')
     async updateOfficerBmi(@Request() req,@Param('id') id:number,@Body()updateOfficerBmiDto:UpdateOfficerBmiDto ){
         return this.officerProfileService.updateOfficerBmi(id,updateOfficerBmiDto,req.user.sub,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Delete('auth/officer/delete_bmi/:id')
+    @Delete('/delete_bmi/:id')
     async deleteOfficerBmi(@Request()req, @Param('id') id:number ){
         return this.officerProfileService.deleteOfficerBmi(id,req.user.sub,req.user);
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Post('auth/officer/create_pushup_record')
+    @Post('/create_pushup_record')
     async createOfficerPushupRecord(@Request()req,@Body()createOfficer1minPushupDto:CreateOfficer1minPushupDto){
         return this.officerProfileService.createOfficer1minPushup(createOfficer1minPushupDto,req.user.sub,req.user)
     }
     
     @UseGuards(AuthGuard('jwt'))
-    @Get('auth/officer/pushup_record')
+    @Get('/pushup_record')
     async getOfficerPushupRecord(@Request()req){
         return this.officerProfileService.getOfficer1minPushup(req.user.sub,req.user)
     }
     @UseGuards(AuthGuard('jwt'))
-    @Put('auth/officer/update_officer_pushup_record/:id')  
+    @Put('/update_officer_pushup_record/:id')  
     async updateOfficerPushupRecord(@Request() req,@Param('id') id: number,@Body() updateOfficer1minPushupDto: UpdateOfficer1minPushupDto) {
     return this.officerProfileService.updateOfficer1minPushup(
         id,updateOfficer1minPushupDto,req.user.sub);
     }
     @UseGuards(AuthGuard('jwt'))
-    @Delete('auth/officer/delete_officer_pushup_record/:id')
+    @Delete('/delete_officer_pushup_record/:id')
     async deleteOfficerPushupRecord(@Request() req, @Param('id') id: number) {
         return this.officerProfileService.deletepushUp(id, req.user);  // Pass full user object
     }
