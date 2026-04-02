@@ -92,6 +92,55 @@ export class OfficerPftTestService{
         return record;
     }
 
+    async admingetsituprecordbyid(adminId:number,recordId:number,user:any):Promise<officersitup1min>{
+        if(user?.sub !== adminId){
+            throw new UnauthorizedException('Unauthorized')
+        }
+
+        const admin = await this.AdminRepository.findOne({
+            where:{id:adminId}
+        })
+
+        if(!admin){
+            throw new NotFoundException('Admin Account not found')
+        }
+
+        const record = await this.officersitupTest.findOne({
+            where:{id:recordId}
+        })
+
+        if(!record){
+            throw new NotFoundException('Record Not Found')
+        }
+        return record;
+    }
+
+    async updatesitupbyadmin(adminId:number,recordId:number,UpdateDto:UpdateSitUpDto,user:any):Promise<{message:string}>{
+          if(user?.sub !== adminId){
+            throw new UnauthorizedException('Unauthorized')
+        }
+
+        const admin = await this.AdminRepository.findOne({
+            where:{id:adminId}
+        })
+
+        if(!admin){
+            throw new NotFoundException('Admin Account not found')
+        }
+
+        const record = await this.officersitupTest.findOne({
+            where:{id:recordId}
+        })
+
+        if(!record){
+            throw new NotFoundException('Record Not Found')
+        }
+        Object.assign(record,UpdateDto)
+        await this.officersitupTest.save(record)
+        return{
+            message:'Updated the record successully'
+        }
+    }
     async updateOfficersitupRecord(updatesitUpDto:UpdateSitUpDto,recordId:number,accountId:number,user:any):Promise<{message:string}>{
         if(user?.sub !== accountId){
             throw new UnauthorizedException('Unauthorized access')
@@ -116,6 +165,32 @@ export class OfficerPftTestService{
             message:'Successfully updated the sitUp Record'
         }
 
+    }
+
+    async deletesitupbyadmin(adminId:number,recordId:number,user:any):Promise<{message:string}>{
+         if(user?.sub !== adminId){
+            throw new UnauthorizedException('Unauthorized')
+        }
+
+        const admin = await this.AdminRepository.findOne({
+            where:{id:adminId}
+        })
+
+        if(!admin){
+            throw new NotFoundException('Admin Account not found')
+        }
+
+        const record = await this.officersitupTest.findOne({
+            where:{id:recordId}
+        })
+
+        if(!record){
+            throw new NotFoundException('Record Not Found')
+        }
+        await this.officersitupTest.delete(recordId) 
+        return{
+            message:'Deleted successfully'
+        }
     }
 
     async deletsitUprecord(recordId:number,accountId:number,user:any):Promise<{message:string}>{

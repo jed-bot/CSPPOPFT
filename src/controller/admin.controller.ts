@@ -181,21 +181,21 @@ export class AdminController{
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('/officer/situprecord/:id')
+        @Get('/officer/get/situprecord/:id')
         async getofficersitup(@Request()req,@Param('id') id:number){
-            return this.OfficerSitUpRepository.getOfficerSpecificRecord(req.user,id,req.user)
+            return this.OfficerSitUpRepository.admingetsituprecordbyid(req.user.sub,id,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
         @Put('/officer/update/situprecord/:id')
         async updateofficersituprecord(@Request()req,@Param('id') id:number,@Body() updateDto:UpdateSitUpDto){
-            return this.OfficerSitUpRepository.updateOfficersitupRecord(updateDto,req.user.sub,id,req.user)
+            return this.OfficerSitUpRepository.updatesitupbyadmin(req.user.sub,id,updateDto,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Delete('/officer/situprecord/:id')
+        @Delete('/officer/delete/situprecord/:id')
         async deleteofficersituprecord(@Request()req,@Param('id') id:number){
-            return this.OfficerSitUpRepository.deletsitUprecord(req.user.sub,id,req.user)
+            return this.OfficerSitUpRepository.deletesitupbyadmin(req.user.sub,id,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))

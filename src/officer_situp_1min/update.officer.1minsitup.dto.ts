@@ -3,5 +3,5 @@ export class UpdateSitUpDto{
     gender:string;
     reps:number;
     test_date:string;
-
+    
 }
