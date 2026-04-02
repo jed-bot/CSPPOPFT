@@ -65,41 +65,43 @@ export class OfficerSprintTestService{
         return sprintRecord;
     }
 
-    async getallofficersprintrecord(user:any):Promise<officer300msprint[]>{
-        if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized Access')
-        }
-        const admin = await this.adminRepository.findOne({
-            where:{id:user.sub}
-        })
+  async getallofficersprintrecordbyadmin(adminId:number,user:any):Promise<officer300msprint[]>{
+    if(user?.sub !== adminId){
+        throw new UnauthorizedException('Unauthorzed access')
+    }
+    const admin = await this.adminRepository.findOne({
+        where:{id:adminId}
+    })
 
-        if (!admin){
-            throw new NotFoundException('Admin does not exsist')
-        }
-
-        const sprintRecord = await this.officerSprintTestRepository.find()
-        return sprintRecord;
+    if(!admin){
+        throw new NotFoundException('Admin Account not found')
     }
 
-    async getofficersprintrecordbyid(recordId:number,user:any):Promise<officer300msprint>{
-        if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized Access')
-        }
+    const record = await this.officerSprintTestRepository.find()
+    return record
+  }
 
-        const admin = await this.adminRepository.findOne({
-            where:{id:user.sub}
-        })
-
-        const record = await  this.officerSprintTestRepository.findOne({
-            where:{id:recordId}
-        })
-
-        if(!record){
-            throw new NotFoundException('Record Not Found')
-        }
-
-        return record;
+  async getsprintrecordbyadmin(adminId:number,recordId:number,user:any):Promise<officer300msprint>{
+if(user?.sub !== adminId){
+        throw new UnauthorizedException('Unauthorzed access')
     }
+    const admin = await this.adminRepository.findOne({
+        where:{id:adminId}
+    })
+
+    if(!admin){
+        throw new NotFoundException('Admin Account not found')
+    }  
+
+    const record = await this.officerSprintTestRepository.findOne({
+        where:{id:recordId}
+    })
+    if(!record){
+        throw new NotFoundException('Record Not found')
+    }
+
+    return record;
+  }
 
     async getspecificsprintrecord(recordId:number,accountId:number,user:any):Promise<officer300msprint>{
         if(!user?.sub){
@@ -123,32 +125,30 @@ export class OfficerSprintTestService{
         return sprintRecord;
     }
 
-    async updateofficersprintrecordadmin(updateDto:Update300mTestDto,recordId:number,user:any):Promise<{message:string}>{
-        if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized Access')
-        }
+    async updateofficersprintrecordadmin(updateDto:Update300mTestDto,recordId:number,adminId:number,user:any):Promise<{message:string}>{
+        if(user?.sub !== adminId){
+        throw new UnauthorizedException('Unauthorzed access')
+    }
+    const admin = await this.adminRepository.findOne({
+        where:{id:adminId}
+    })
 
-        const admin = await this.adminRepository.findOne({
-            where:{id:user.sub}
-        })
+    if(!admin){
+        throw new NotFoundException('Admin Account not found')
+    }  
 
-        if(!admin){
-            throw new NotFoundException('Admin Not found')
-        }
+    const record = await this.officerSprintTestRepository.findOne({
+        where:{id:recordId}
+    })
+    if(!record){
+        throw new NotFoundException('Record Not found')
+    }
 
-        const record = await this.officerSprintTestRepository.findOne({
-            where:{id:recordId}
-        })
-
-        if(!record){
-            throw new NotFoundException('Record not found')
-        }
-
-        Object.assign(record,updateDto)
-        await this.officerSprintTestRepository.save(record)
-        return{
-            message:'Updated successfully'
-        }
+    Object.assign(record,updateDto)
+    await this.officerSprintTestRepository.save(record)
+    return {
+        message:'Updated successfully'
+    }
     }
 
     async updateofficersprintrecord(updateDto:Update300mTestDto,accountId:number,recordId:number,user:any):Promise<{message:string}>{
@@ -178,26 +178,24 @@ export class OfficerSprintTestService{
         }
     }
 
-    async deletebyAdmin(user:any,recordId:number):Promise<{message:string}>{
-         if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized Access')
-        }
+    async deletebyAdmin(adminId:number,recordId:number,user:any):Promise<{message:string}>{
+          if(user?.sub !== adminId){
+        throw new UnauthorizedException('Unauthorzed access')
+    }
+    const admin = await this.adminRepository.findOne({
+        where:{id:adminId}
+    })
 
-        const admin = await this.adminRepository.findOne({
-            where:{id:user.sub}
-        })
+    if(!admin){
+        throw new NotFoundException('Admin Account not found')
+    }  
 
-        if(!admin){
-            throw new NotFoundException('Admin Not found')
-        }
-
-        const record = await this.officerSprintTestRepository.findOne({
-            where:{id:recordId}
-        })
-
-        if(!record){
-            throw new NotFoundException('Record not found')
-        }
+    const record = await this.officerSprintTestRepository.findOne({
+        where:{id:recordId}
+    })
+    if(!record){
+        throw new NotFoundException('Record Not found')
+    }
         await this.officerSprintTestRepository.delete(recordId)
         return{
             message:'Deleted successfully'

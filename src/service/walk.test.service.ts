@@ -47,48 +47,43 @@ export class OfficerWalkTestService{
         }
     }
 
-    async getallofficerwalkrecord(user:any):Promise<walktest[]>{
-         if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized Access')
+    async getalladminwalkrecord(adminId:number,user:any):Promise<walktest[]>{
+        if(user?.sub !== adminId){
+            throw new UnauthorizedException('Unauthorized access')
         }
 
         const admin = await this.adminRepository.findOne({
-            where:{id:user.sub}
+            where:{id:adminId}
         })
 
         if(!admin){
-            throw new NotFoundException('Admin Not found')
+            throw new NotFoundException('Admin Account not found')
         }
-        
+
         const records = await this.officerWalkTestRepository.find()
-
-        return records
-
+        return records;
     }
 
-    async getofficerwalkrecordbyid(user:any,recordId):Promise<walktest>{
-         if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized Access')
+    async admingetwalkrecordbyid(adminId:number,recordId:number,user:any):Promise<walktest>{
+         if(user?.sub !== adminId){
+            throw new UnauthorizedException('Unauthorized access')
         }
 
         const admin = await this.adminRepository.findOne({
-            where:{id:user.sub}
+            where:{id:adminId}
         })
 
         if(!admin){
-            throw new NotFoundException('Admin Not found')
+            throw new NotFoundException('Admin Account not found')
         }
-
-        const record = await this.officerWalkTestRepository.findOne({
+        const record  = await this.officerWalkTestRepository.findOne({
             where:{id:recordId}
         })
-
         if(!record){
-            throw new NotFoundException('Record not found')
+            throw new NotFoundException('Record Not Found')
         }
 
         return record;
-
     }
 
     async getofficerwalktestrecords(accountId:number,user:any):Promise<walktest[]>{
@@ -137,34 +132,32 @@ export class OfficerWalkTestService{
         return record;
     }
 
-    async updateofficerwalktestbyadmin(user:any,updateDto:UpdateOfficerWalkDto,recordId:number):Promise<{message:string}>{
-         if(!user?.sub){
-                    throw new UnauthorizedException('Unauthorized Access')
-                }
-        
-                const admin = await this.adminRepository.findOne({
-                    where:{id:user.sub}
-                })
-        
-                if(!admin){
-                    throw new NotFoundException('Admin Not found')
-                }
-        
-                const record = await this.officerWalkTestRepository.findOne({
-                    where:{id:recordId}
-                })
-        
-                if(!record){
-                    throw new NotFoundException('Record not found')
-                }
+    
 
-                Object.assign(record,updateDto)
-                await this.officerWalkTestRepository.save(record)
-                return{
-                    message:'Updated successfully'
-                }
-        
-    }
+   async updatewalktestbyadmin(adminId:number,recordId:number,updatedto:UpdateOfficerWalkDto,user:any):Promise<{message:string}>{
+     if(user?.sub !== adminId){
+            throw new UnauthorizedException('Unauthorized access')
+        }
+
+        const admin = await this.adminRepository.findOne({
+            where:{id:adminId}
+        })
+
+        if(!admin){
+            throw new NotFoundException('Admin Account not found')
+        }
+        const record  = await this.officerWalkTestRepository.findOne({
+            where:{id:recordId}
+        })
+        if(!record){
+            throw new NotFoundException('Record Not Found')
+        }
+        Object.assign(record,updatedto)
+        await this.officerWalkTestRepository.save(record)
+        return{
+            message:'Updated successfully'
+        }
+   }
 
     async updateofficerwalktest(UpdateDto:UpdateOfficerWalkDto,accountId:number,recordId:number,user:any):Promise<{message:string}>{
         if(user?.sub !== accountId){
@@ -193,27 +186,24 @@ export class OfficerWalkTestService{
     }
 
 
-    async deletebyAdmin(user:any,recordId:number):Promise<{message:string}>{
-         if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized Access')
+    async deletebyAdmin(adminId:number,recordId:number,user:any):Promise<{message:string}>{
+         if(user?.sub !== adminId){
+            throw new UnauthorizedException('Unauthorized access')
         }
 
         const admin = await this.adminRepository.findOne({
-            where:{id:user.sub}
+            where:{id:adminId}
         })
 
         if(!admin){
-            throw new NotFoundException('Admin Not found')
+            throw new NotFoundException('Admin Account not found')
         }
-
-        const record = await this.officerWalkTestRepository.findOne({
+        const record  = await this.officerWalkTestRepository.findOne({
             where:{id:recordId}
         })
-
         if(!record){
-            throw new NotFoundException('Record not found')
+            throw new NotFoundException('Record Not Found')
         }
-
         await this.officerWalkTestRepository.delete(recordId);
         return{
             message:'Deleted successfully'

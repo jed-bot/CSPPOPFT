@@ -199,51 +199,51 @@ export class AdminController{
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('/officer/sprintrecords')
+        @Get('/officer/get/allsprintrecords')
         async getallofficersprintrecord(@Request()req){
-            return this.OfficerSprinttestRepository.getallofficersprintrecord(req.user.sub)
+            return this.OfficerSprinttestRepository.getallofficersprintrecordbyadmin(req.user.sub,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get ('/officer/sprintrecord/:id')
+        @Get ('/officer/get/sprintrecord/:id')
         async getofficerprintrecordbyid(@Request()req,@Param('id') id:number){
-            return this.OfficerSprinttestRepository.getofficersprintrecordbyid(req.user.sub,id)
+            return this.OfficerSprinttestRepository.getsprintrecordbyadmin(req.user.sub,id,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
         @Put('/officer/update/sprintrecord/:id')
-        async updateofficersprintrecord(@Request()req,@Param('id')id:number,updateDto:Update300mTestDto,user:any){
-            return this.OfficerSprinttestRepository.updateofficersprintrecordadmin(updateDto,id,req.user.sub)
+        async updateofficersprintrecord(@Request()req,@Param('id')id:number,@Body()updateDto:Update300mTestDto,user:any){
+            return this.OfficerSprinttestRepository.updateofficersprintrecordadmin(updateDto,id,req.user.sub,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
         @Delete('/officer/delete/sprintrecord/:id')
         async deleteofficersprintrecord(@Request()req,@Param('id')id:number){
-            return this.OfficerSprinttestRepository.deletebyAdmin(req.user.sub,id)
+            return this.OfficerSprinttestRepository.deletebyAdmin(req.user.sub,id,req.user)
         }
       
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('/officer/walktestrecord')
+        @Get('/officer/get/walktestrecord')
         async getallwalktestrecord(@Request()req){
-            return this.OfficerwalkRepository.getallofficerwalkrecord(req.user.sub)
+            return this.OfficerwalkRepository.getalladminwalkrecord(req.user.sub,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('/officer/walktest/:id')
+        @Get('/officer/get/walktest/:id')
         async getwaltestrecord(@Request()req,@Param('id') id:number){
-            return this.OfficerwalkRepository.getofficerwalkrecordbyid(req.user.sub,id)
+            return this.OfficerwalkRepository.admingetwalkrecordbyid(req.user.sub,id,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
         @Put('/officer/update/walktest/:id')
-        async updateofficerwalktrecord(@Request()req,@Param('id') id:number,updateDto:UpdateOfficerWalkDto){
-            return this.OfficerwalkRepository.updateofficerwalktestbyadmin(req.user.sub,updateDto,id)
+        async updateofficerwalktrecord(@Request()req,@Param('id') id:number,@Body()updateDto:UpdateOfficerWalkDto){
+            return this.OfficerwalkRepository.updatewalktestbyadmin(req.user.sub,id,updateDto,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
         @Delete('/officer/delete/walktest/:id')
         async deleteofficerwalkrecord(@Request()req,@Param('id') id:number){
-            return this.OfficerwalkRepository.deletebyAdmin(req.user.sub,id)
+            return this.OfficerwalkRepository.deletebyAdmin(req.user.sub,id,req.user)
         }
 }   
