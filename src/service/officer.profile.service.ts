@@ -282,19 +282,19 @@ async createOfficer1minPushup(
 }
 
 
+    async getofficerpushrecordbyid(adminId:number,recordId:number,user:any):Promise<officer1minpushup>{
+       if (user?.sub !== adminId) {
+        throw new UnauthorizedException('Unauthorized access');
+    }
 
-    async getofficerpushrecordbyid(recordId:number,user:any):Promise<officer1minpushup>{
-        if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized access')
-        }
+    const admin = await this.adminRepository.findOne({
+        where: { id: adminId }
+    });
 
-        const admin = await this.adminRepository.findOne({
-            where:{id:user.sub}
-        })
+    if (!admin) {
+        throw new NotFoundException('Admin account not found');
+    }
 
-        if(!admin){
-            throw new NotFoundException('Admin Account not found')
-        }
         const pushuprecord = await this.pushUpRepository.findOne({
             where:{id:recordId}
         })
@@ -354,6 +354,60 @@ async createOfficer1minPushup(
     await this.pushUpRepository.save(pushupRecord);
     
     return { message: 'Updated successfully' };
+}
+
+async adminupdatepushup(adminId:number,recordId:number,updateDto:UpdateOfficer1minPushupDto,user:any):Promise<{message:string}>{
+       if (user?.sub !== adminId) {
+        throw new UnauthorizedException('Unauthorized access');
+    }
+
+    const admin = await this.adminRepository.findOne({
+        where: { id: adminId }
+    });
+
+    if (!admin) {
+        throw new NotFoundException('Admin account not found');
+    }
+
+        const pushuprecord = await this.pushUpRepository.findOne({
+            where:{id:recordId}
+        })
+
+        if(!pushuprecord){
+            throw new NotFoundException('Office Record Not Found')
+        }
+        Object.assign(pushuprecord,updateDto)
+        await this.pushUpRepository.save(pushuprecord)
+        return {
+            message:'Update the pushup record successfully'
+        }
+}
+
+async deletepushupbyadmin(adminId:number,recordId:number,user:any):Promise<{message:string}>{
+         if (user?.sub !== adminId) {
+        throw new UnauthorizedException('Unauthorized access');
+    }
+
+    const admin = await this.adminRepository.findOne({
+        where: { id: adminId }
+    });
+
+    if (!admin) {
+        throw new NotFoundException('Admin account not found');
+    }
+
+        const pushuprecord = await this.pushUpRepository.findOne({
+            where:{id:recordId}
+        })
+
+        if(!pushuprecord){
+            throw new NotFoundException('Office Record Not Found')
+        }
+
+        await this.pushUpRepository.delete(recordId)
+        return{
+            message:'deleted the record successfully'
+        }
 }
     async deletepushUp(pushUpId:number,user:any):Promise<{message:string}>{
         const accountId = user.sub;

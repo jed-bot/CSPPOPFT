@@ -152,25 +152,25 @@ export class AdminController{
         @UseGuards(AuthGuard('jwt'))
         @Get ('auth/admin/officer/pushuprecord')
         async getallofficerpushuprecord(@Request()req){
-            return this.OfficerBmiSevice.getallpushuprecord(req.user.sub,req.user)
+              return this.OfficerBmiSevice.getallpushuprecord(req.user.sub,req.user);
         }
 
         @UseGuards(AuthGuard('jwt'))
         @Get('auth/admin/officer/pushuprecord/:id')
         async getofficerpushuprecord(@Request()req,@Param('id') id:number){
-            return this.OfficerBmiSevice.getofficerpushrecordbyid(id,req.user.sub)
+            return this.OfficerBmiSevice.getofficerpushrecordbyid(req.user.sub,id,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
         @Put ('auth/admin/officer/update/pushuprecord/:id')
-        async updateofficerpushuprecrd(@Request()req,@Body() updatedto:UpdateOfficer1minPushupDto,@Param('id')id:number){
-            return this.OfficerBmiSevice.updateOfficer1minPushup(req.user.sub,updatedto,id)
+        async updateofficerpushuprecrd(@Request()req,@Param('id') id:number,@Body() updatedto:UpdateOfficer1minPushupDto){
+            return this.OfficerBmiSevice.adminupdatepushup(req.user.sub,id,updatedto,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
         @Delete('auth/admin/officer/delete/pushuprecord/:id')
         async deleteofficerpushuprecord(@Request()req,@Param('id')id:number){
-            return this.OfficerBmiSevice.deletepushUp(req.user.sub,id)
+            return this.OfficerBmiSevice.deletepushupbyadmin(req.user.sub,id,req.user)
         }
 
 
