@@ -20,6 +20,7 @@ import { UpdateSitUpDto } from 'src/officer_situp_1min/update.officer.1minsitup.
 import { Update300mTestDto } from 'src/300m_test_dto/update.300m.test.dto';
 import { OfficerWalkTestService } from 'src/service/walk.test.service';
 import { UpdateOfficerWalkDto } from 'src/walk_test_dto/update.officer.walk.test.dto';
+import { AdminAuthKeyGuard } from 'src/auth/admin.auth.key.guard';
 
 
 @Controller('auth/admin')
@@ -49,6 +50,7 @@ export class AdminController{
             return this.adminService.getAdminInfoById(req.user,id)
         }
         //route for creating admin
+        @UseGuards(AdminAuthKeyGuard)
         @Post('/signup')
             async createAdmin(@Body(new ValidationPipe()) createAdminDto: CreateAdminDto) {
                 return this.adminService.createAdmin(createAdminDto)
