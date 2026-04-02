@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { officerprofile } from 'src/entities/officerprofile.entity';
 import {officersitup1min} from 'src/entities/officersitup1min.entity';
 import { CreateSitUpDto } from 'src/officer_situp_1min/create.officer.1minsitup.dto';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { UpdateSitUpDto } from 'src/officer_situp_1min/update.officer.1minsitup.dto';
 import { administrator } from 'src/entities/administrator.entity';
 
@@ -78,21 +78,18 @@ export class OfficerPftTestService{
         return sitUpRecord;
     }
 
-    async getallofficersituprecord(user:any):Promise<officersitup1min[]>{
-        if(!user?.sub){
-            throw new UnauthorizedException('Unauthorized access')
-        }
-
-        const adminId = await this.AdminRepository.findOne({
-            where:{id:user.sub}
+    async getallsituprecordbyadmin(adminId:number):Promise<officersitup1min[]>{
+    
+        const admin = await this.AdminRepository.findOne({
+            where:{id:adminId}
         })
 
-        if(!adminId){
-            throw new NotFoundException('Admin Account not Found')
+        if(!admin){
+            throw new NotFoundException('Admin Account not found')
         }
 
-        const situprecord = await this.officersitupTest.find()
-        return situprecord;
+        const record = await this.officersitupTest.find()
+        return record;
     }
 
     async updateOfficersitupRecord(updatesitUpDto:UpdateSitUpDto,recordId:number,accountId:number,user:any):Promise<{message:string}>{

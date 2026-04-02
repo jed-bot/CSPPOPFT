@@ -22,7 +22,7 @@ import { OfficerWalkTestService } from 'src/service/walk.test.service';
 import { UpdateOfficerWalkDto } from 'src/walk_test_dto/update.officer.walk.test.dto';
 
 
-@Controller()
+@Controller('auth/admin')
 export class AdminController{
 
     constructor(
@@ -37,212 +37,212 @@ export class AdminController{
 
        // get admin info with bearer token
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/info')
+        @Get('/info')
         async getAdminInfo(@Request()req){
             return this.adminService.getAdmininfo(req.user.sub,req.user);
         }
 
         //get Admin by Id
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/info/:id')
+        @Get('/info/:id')
         async getAdminById(@Param('id',ParseIntPipe)id:number,@Request()req){
             return this.adminService.getAdminInfoById(req.user,id)
         }
         //route for creating admin
-        @Post('auth/admin/signup')
+        @Post('/signup')
             async createAdmin(@Body(new ValidationPipe()) createAdminDto: CreateAdminDto) {
                 return this.adminService.createAdmin(createAdminDto)
             }
         //route for login admin
-        @Post('auth/admin/login')
+        @Post('/login')
             async loginAdmin(@Body(new ValidationPipe()) loginAdminDto:LoginAdminDto){
                 return this.adminService.loginAdmin(loginAdminDto)
             }
         //route for forgot password
         @UseGuards(AuthGuard('jwt'))
-        @Put('auth/admin/forgot_password')
+        @Put('/forgot_password')
         async forgotPassword(@Request() req,@Body()dto:ForgotPasswordDto){
             return this.adminService.forgotPassword(dto,req.user);
         }
 
         //route for admin deletion 
         @UseGuards(AuthGuard('jwt'))
-        @Delete('auth/admin/delete')
+        @Delete('/delete')
         async deleteAdmin(@Request()req,@Body()dto:DeleteAdminDto){
             return this.adminService.deleteAdmin(dto,req.user)
         }
         //update admin status
         @UseGuards(AuthGuard('jwt'))
-        @Put('auth/admin/update/status')
+        @Put('/update/status')
             async updateAdminStatus(@Request()req,@Body()dto:AdminStatusDto){
                 return this.adminService.updateAdminStatus(dto,req.user)
         }
         //update admin info 
         @UseGuards(AuthGuard('jwt'))
-        @Put('auth/admin/update/info')
+        @Put('/update/info')
         async updateAdminInfo(@Request()req,@Body()dto:UpdateAdminInfoDto){
             return this.adminService.updateAdminInfo(dto,req.user)
         }
         //update officer account status
         @UseGuards(AuthGuard('jwt'))
-        @Put('auth/admin/update/officer/status')
+        @Put('/update/officer/status')
             async updateOfficerStatus(@Request()req,@Body()dto:UpdateOfficerStatus){
                 return this.adminService.updateOfficerStatus(dto,req.user)
         }
         //get all officer accounts
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/officer/accounts')
+        @Get('/officer/accounts')
             async getAllOfficerAccount(@Param('id') id:number, @Request()req){
                 return this.adminService.getAllofficerAccount(req.user)
             }
         //get officer account by id
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/officer/account/:id')
+        @Get('/officer/account/:id')
             async getOfficerAccountById(@Param('id',ParseIntPipe)id:number,@Request()req){
                 return this.adminService.getofficerAccountbyId(req.user,id)
             }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/officer/profile')
+        @Get('/officer/profile')
         async getallofficerpofile(@Request()req){
             return this.OfficerProfileService.getallofficerprofile(req.user.sub)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get ('auth/admin/officer/profile/:id')
+        @Get ('/officer/profile/:id')
         async getofficerprofilebyid(@Request()req,@Param('id')id:number){
             return this.OfficerProfileService.getofficerprofilebyid(req.user.sub,id)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Put ('auth/admin/update/officerprofile/:id')
+        @Put ('/update/officerprofile/:id')
         async updateofficerprofile(@Request()req,@Body()updateofficerpfdto:UpdateOfficerProfileDto,@Param('id')id:number){
             return this.OfficerProfileService.UpdateOfficerProfile(req.user.sub,updateofficerpfdto,id)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Delete('auth/admin/delete/officerprofile/:id')
+        @Delete('/delete/officerprofile/:id')
         async deleteofficerprofile(@Request()req,@Param('id')id:number){
             return this.OfficerProfileService.deleteofficerprofile(req.user.sub,id)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get ('auth/admin/officer/get/officerbmi')
+        @Get ('/officer/get/officerbmi')
         async getallofficerbmi(@Request()req ){
             return this.OfficerBmiSevice.getallofficerbmi(req.user.sub)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/officer/get/officerbmi/:id')
+        @Get('/officer/get/officerbmi/:id')
         async getofficerbmibyid(@Request()req,@Param('id')id:number){
             return this.OfficerBmiSevice.getofficerbmirecordbyid(id,req.user.sub)
         }
         @UseGuards(AuthGuard('jwt'))
-        @Put('auth/admin/officer/update/officerbmi/:id')
+        @Put('/officer/update/officerbmi/:id')
         async updateofficerbmireocrd(@Request()req,@Param('id')id:number,updateofficerbmidto:UpdateOfficerBmiDto){
             return this.OfficerBmiSevice.updateofficerbmi(id,req.user.sub,updateofficerbmidto,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Delete('auth/admin/officer/delete/officerbmi/:id')
+        @Delete('/officer/delete/officerbmi/:id')
         async deleteofficerbmi(@Request()req,@Param('id')id:number){
             return this.OfficerBmiSevice.deletbmibyadmin(id,req.user.sub,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get ('auth/admin/officer/pushuprecord')
+        @Get ('/officer/pushuprecord')
         async getallofficerpushuprecord(@Request()req){
               return this.OfficerBmiSevice.getallpushuprecord(req.user.sub,req.user);
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/officer/pushuprecord/:id')
+        @Get('/officer/pushuprecord/:id')
         async getofficerpushuprecord(@Request()req,@Param('id') id:number){
             return this.OfficerBmiSevice.getofficerpushrecordbyid(req.user.sub,id,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Put ('auth/admin/officer/update/pushuprecord/:id')
+        @Put ('/officer/update/pushuprecord/:id')
         async updateofficerpushuprecrd(@Request()req,@Param('id') id:number,@Body() updatedto:UpdateOfficer1minPushupDto){
             return this.OfficerBmiSevice.adminupdatepushup(req.user.sub,id,updatedto,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Delete('auth/admin/officer/delete/pushuprecord/:id')
+        @Delete('/officer/delete/pushuprecord/:id')
         async deleteofficerpushuprecord(@Request()req,@Param('id')id:number){
             return this.OfficerBmiSevice.deletepushupbyadmin(req.user.sub,id,req.user)
         }
 
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/officer/situprecords')
-        async getallofficersitup(@Request()Req){
-            return this.OfficerSitUpRepository.getallofficersituprecord(Req.user.sub)
+        @Get ('/officer/get/allsituprecord')
+        async getallofficersituprecord(@Request()req){
+            return this.OfficerSitUpRepository.getallsituprecordbyadmin(req.user.sub)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/officer/situprecord/:id')
+        @Get('/officer/situprecord/:id')
         async getofficersitup(@Request()req,@Param('id') id:number){
             return this.OfficerSitUpRepository.getOfficerSpecificRecord(req.user,id,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Put('auth/admin/officer/update/situprecord/:id')
+        @Put('/officer/update/situprecord/:id')
         async updateofficersituprecord(@Request()req,@Param('id') id:number,@Body() updateDto:UpdateSitUpDto){
             return this.OfficerSitUpRepository.updateOfficersitupRecord(updateDto,req.user.sub,id,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Delete('auth/admin/officer/situprecord/:id')
+        @Delete('/officer/situprecord/:id')
         async deleteofficersituprecord(@Request()req,@Param('id') id:number){
             return this.OfficerSitUpRepository.deletsitUprecord(req.user.sub,id,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/officer/sprintrecords')
+        @Get('/officer/sprintrecords')
         async getallofficersprintrecord(@Request()req){
             return this.OfficerSprinttestRepository.getallofficersprintrecord(req.user.sub)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get ('auth/admin/officer/sprintrecord/:id')
+        @Get ('/officer/sprintrecord/:id')
         async getofficerprintrecordbyid(@Request()req,@Param('id') id:number){
             return this.OfficerSprinttestRepository.getofficersprintrecordbyid(req.user.sub,id)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Put('auth/admin/officer/update/sprintrecord/:id')
+        @Put('/officer/update/sprintrecord/:id')
         async updateofficersprintrecord(@Request()req,@Param('id')id:number,updateDto:Update300mTestDto,user:any){
             return this.OfficerSprinttestRepository.updateofficersprintrecordadmin(updateDto,id,req.user.sub)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Delete('auth/admin/officer/delete/sprintrecord/:id')
+        @Delete('/officer/delete/sprintrecord/:id')
         async deleteofficersprintrecord(@Request()req,@Param('id')id:number){
             return this.OfficerSprinttestRepository.deletebyAdmin(req.user.sub,id)
         }
       
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/officer/walktestrecord')
+        @Get('/officer/walktestrecord')
         async getallwalktestrecord(@Request()req){
             return this.OfficerwalkRepository.getallofficerwalkrecord(req.user.sub)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Get('auth/admin/officer/walktest/:id')
+        @Get('/officer/walktest/:id')
         async getwaltestrecord(@Request()req,@Param('id') id:number){
             return this.OfficerwalkRepository.getofficerwalkrecordbyid(req.user.sub,id)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Put('auth/admin/officer/update/walktest/:id')
+        @Put('/officer/update/walktest/:id')
         async updateofficerwalktrecord(@Request()req,@Param('id') id:number,updateDto:UpdateOfficerWalkDto){
             return this.OfficerwalkRepository.updateofficerwalktestbyadmin(req.user.sub,updateDto,id)
         }
 
         @UseGuards(AuthGuard('jwt'))
-        @Delete('auth/admin/officer/delete/walktest/:id')
+        @Delete('/officer/delete/walktest/:id')
         async deleteofficerwalkrecord(@Request()req,@Param('id') id:number){
             return this.OfficerwalkRepository.deletebyAdmin(req.user.sub,id)
         }
