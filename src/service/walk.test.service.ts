@@ -47,7 +47,7 @@ export class OfficerWalkTestService{
         }
     }
 
-    async getalladminwalkrecord(adminId:number,user:any):Promise<walktest[]>{
+    async getalladminwalkrecord(adminId:number,user:any):Promise<any[]>{
         if(user?.sub !== adminId){
             throw new UnauthorizedException('Unauthorized access')
         }
@@ -59,9 +59,24 @@ export class OfficerWalkTestService{
         if(!admin){
             throw new NotFoundException('Admin Account not found')
         }
-
-        const records = await this.officerWalkTestRepository.find()
-        return records;
+          const records = await this.officerWalkTestRepository.find({ 
+    relations: ['officerprofile'] 
+  })
+  
+  // Transform to include officer_name (full name)
+  return records.map(record => ({
+    id: record.id,
+    officer_id: record.officer_id,
+    officer_name: `${record.officerprofile?.first_name} ${record.officerprofile?.last_name}`.trim(),
+    age: record.age,
+    gender: record.gender,
+    minutes: record.minutes,
+    seconds: record.seconds,
+    grade: record.grade,
+    time_formatted: record.time_formatted,
+    test_date: record.test_date,
+    created_at: record.created_at
+  }))
     }
 
     async admingetwalkrecordbyid(adminId:number,recordId:number,user:any):Promise<walktest>{

@@ -5,7 +5,6 @@ export class CreateOfficerBmiDto{
   height_meter: number;
 
   @IsNumber()
-
   weight_kg: number;
 
   @IsString()
