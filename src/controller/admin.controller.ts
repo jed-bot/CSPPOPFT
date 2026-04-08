@@ -141,7 +141,7 @@ export class AdminController{
         }
         @UseGuards(AuthGuard('jwt'))
         @Put('/officer/update/officerbmi/:id')
-        async updateofficerbmireocrd(@Request()req,@Param('id')id:number,updateofficerbmidto:UpdateOfficerBmiDto){
+        async updateofficerbmireocrd(@Request()req,@Param('id')id:number,@Body()updateofficerbmidto:UpdateOfficerBmiDto){
             return this.OfficerBmiSevice.updateofficerbmi(id,req.user.sub,updateofficerbmidto,req.user)
         }
 

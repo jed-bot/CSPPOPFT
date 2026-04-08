@@ -18,16 +18,19 @@ export class OfficerPftTestService{
         private readonly AdminRepository:Repository<administrator>,
     ){}
     async createofficer1minstup(createDto:CreateSitUpDto,accountId:number,user:any ):Promise<{message:string}>{
-        if(user?.sub !== accountId){
-            throw new UnauthorizedException('Unauthoried Access');
-        }
-        const officerProfile = await this.officerProfileRepository.findOne({
-            where:{officer_account_id:accountId}
-        })
+       const officerAccountId = Number(user?.sub);
+    
+    if(!officerAccountId){
+        throw new UnauthorizedException('Invalid token');
+    }
+    
+    const officerProfile = await this.officerProfileRepository.findOne({
+        where:{officer_account_id: officerAccountId}
+    })
 
-        if(!officerProfile){
-            throw new NotFoundException('Account not foound');
-        }
+    if(!officerProfile){
+        throw new NotFoundException('Account not found');
+    }
 
         const profileId = officerProfile.id;
         const createsitUp  = this.officersitupTest.create({
