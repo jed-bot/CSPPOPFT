@@ -1,11 +1,12 @@
 import { walktest } from "src/entities/officer.walk.test.entity";
-import { Create2kmTestDto } from "src/walk_test_dto/create.walk.test.dto";
+import { Create2kmTestDto,CreatewalkRecordbyAnotherofficer} from "src/walk_test_dto/create.walk.test.dto";
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm'; 
 import { officerprofile } from 'src/entities/officerprofile.entity';
 import { InjectRepository } from "@nestjs/typeorm";
 import { UpdateOfficerWalkDto } from "src/walk_test_dto/update.officer.walk.test.dto";
 import { administrator } from "src/entities/administrator.entity";
+
 
 @Injectable()
 export class OfficerWalkTestService{
@@ -18,6 +19,38 @@ export class OfficerWalkTestService{
         private readonly adminRepository:Repository<administrator>
     ){}
 
+
+    async createofficerwalkrecordbyanotherofficer(createDto:CreatewalkRecordbyAnotherofficer,user:any):Promise<{message:string}>{
+        if(!user){
+        throw new UnauthorizedException('You are not yet verified')
+      }
+      
+      const profile = await this.officerProfileRepository.findOne({
+        where:{id:createDto.officer_id}
+      })
+      if(!profile){
+        throw new NotFoundException(`Officer with ID ${createDto.officer_id} not found`)
+      }
+
+      const timeFormatted = `${String(createDto.minutes).padStart(2,'0')}:${String(createDto.seconds).padStart(1,'0')}`;
+
+      await this.officerWalkTestRepository
+      .createQueryBuilder()
+      .insert()
+      .into(walktest)
+      .values({
+        officer_id:createDto.officer_id,
+        gender:createDto.gender,
+        minutes:createDto.minutes,
+        test_date:createDto.test_date,
+        age:createDto.age,
+        grade:() => `calc_grade('${createDto.gender}',${createDto.age},${createDto.minutes},${createDto.seconds})`
+      })
+      .execute();
+    return {
+        message: 'Created Successfully'
+    };
+    }
 
    async createofficerwalktest(createDto: Create2kmTestDto, accountId: number, user: any): Promise<{ message: string }> {
     if (user?.sub !== accountId) {

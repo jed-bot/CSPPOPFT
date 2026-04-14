@@ -1,9 +1,10 @@
 import {Controller,Get,Post,Body,UseGuards,Put,Request,Param, Delete} from '@nestjs/common';
 import { OfficerAccountService } from 'src/service/officer.account.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Create2kmTestDto } from 'src/walk_test_dto/create.walk.test.dto';
+import { Create2kmTestDto,CreatewalkRecordbyAnotherofficer } from 'src/walk_test_dto/create.walk.test.dto';
 import { UpdateOfficerWalkDto } from 'src/walk_test_dto/update.officer.walk.test.dto';
 import { OfficerWalkTestService } from 'src/service/walk.test.service';
+
 
 @Controller('auth/officer')
 export class OfficerWalktestController{
@@ -33,5 +34,11 @@ export class OfficerWalktestController{
     @Delete('/delete_walkrecord/:id')
     async deleteOfficerWalkTestRecord(@Request()req,@Param('id') id:number){
         return this.OfficerWalkTestService.deletewalkrecord(id,req.user.sub,req.user);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('/create_walkrecord_byother')
+    async createofficerwalktestrecordbyother(@Request()req,@Body()createdDto:CreatewalkRecordbyAnotherofficer,user:any){
+        return this.OfficerWalkTestService.createofficerwalkrecordbyanotherofficer(createdDto,req.user)
     }
 }

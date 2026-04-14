@@ -30,3 +30,12 @@ export declare class Create2kmTestDto {
     @Max(120)
     age: number;
 }
+
+export class CreatewalkRecordbyAnotherofficer{
+    officer_id:number;
+    gender:string;
+    minutes:number;
+    seconds:number;
+    test_date:string;
+    age:number;
+}
