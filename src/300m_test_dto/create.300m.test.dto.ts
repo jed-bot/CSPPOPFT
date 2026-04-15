@@ -5,3 +5,11 @@ export class Create300mTestDto{
     test_date: string;
     age: number;
 }
+
+export class createofficersprinttestbyother{
+    officer_id:number;
+    minutes: number;
+    seconds: number;
+    test_date: string;
+    age: number;
+}

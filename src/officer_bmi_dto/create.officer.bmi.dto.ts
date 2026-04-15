@@ -13,3 +13,10 @@ export class CreateOfficerBmiDto{
     month_taken:string;
 
 }
+
+export class createofficerbmibyother{
+  offucer_profile_id:number;
+  height_meter: number;
+  weight_kg: number;
+   month_taken:string;
+}

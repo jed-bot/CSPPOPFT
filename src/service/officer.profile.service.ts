@@ -9,7 +9,7 @@ import { CreateOfficerProfileDto } from 'src/officer_profile_dto/create.officer.
 import {officerprofile} from 'src/entities/officerprofile.entity';
 import {OfficerAccountService} from 'src/service/officer.account.service';
 import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.profile.dto';
-import { CreateOfficerBmiDto } from 'src/officer_bmi_dto/create.officer.bmi.dto';
+import { CreateOfficerBmiDto,createofficerbmibyother } from 'src/officer_bmi_dto/create.officer.bmi.dto';
 import { officeraccount } from 'src/entities/officeraccount.entity';
 import { officerbmi } from 'src/entities/officerbmi.entity';
 import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
@@ -38,6 +38,32 @@ export class OfficerProfileService{
     ){}
 
 
+
+    async createofficerbmibyother(createDto:createofficerbmibyother,user:any):Promise<{message:string}>{
+        if(!user){
+            throw new UnauthorizedException('You are not yet verified')
+        }
+        const profile = await this.officerProfileRepository.findOne({
+            where:{id:createDto.officer_profile_id}
+        })
+
+        if(!profile){
+            throw new NotFoundException('Officer Profile not found')
+        }
+        const createbmi = this.officerBmiRepository.create({
+            officer_profile_id:createDto.officer_profile_id,
+            height_meter: createDto.height_meter,
+            weight_kg: createDto.weight_kg,
+            month_taken: createDto.month_taken,
+        })
+
+        await this.officerBmiRepository.save(createbmi)
+
+        return{
+            message:'Created Successfully'
+        }
+
+    }
   async createOfficerbmi(createOfficerBmiDto: CreateOfficerBmiDto,accountId: number,user: any): Promise<{ message: string }> {
     if (user?.sub !== accountId) {
         throw new UnauthorizedException('Unauthorized access');

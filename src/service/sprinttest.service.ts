@@ -1,5 +1,5 @@
 import { InjectRepository } from "@nestjs/typeorm";
-import { Create300mTestDto } from "src/300m_test_dto/create.300m.test.dto";
+import { Create300mTestDto,createofficersprinttestbyother } from "src/300m_test_dto/create.300m.test.dto";
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { officerprofile } from 'src/entities/officerprofile.entity';
@@ -18,6 +18,34 @@ export class OfficerSprintTestService{
         private readonly adminRepository:Repository<administrator>,
     ){}
 
+
+    async createofficersprinttestbyother(createDto:createofficersprinttestbyother,user:any):Promise<{message:string}>{
+        if(!user){
+            throw new UnauthorizedException('Unauthorized')
+        }
+
+        const profile = await this.officerSprintTestRepository.findOne({
+            where:{id:createDto.officer_id}
+        })
+
+        if(!profile){
+            throw new NotFoundException('Officer Profile Not Found')
+        }
+
+        const createsprinttest = this.officerSprintTestRepository.create({
+            officer_id:createDto.officer_id,
+            age:createDto.age,
+            minutes:createDto.minutes,
+            seconds:createDto.seconds,
+            test_date:createDto.test_date,
+        })
+
+        await this.officerSprintTestRepository.save(createsprinttest)
+
+        return{
+            message:'Created Successfully'
+        }
+    }
     async createofficersprinttest(createDto:Create300mTestDto,accountId:number,user:any):Promise<{message:string}>{
         if(user?.sub !== accountId){
             throw new UnauthorizedException('Unauthorized Access');

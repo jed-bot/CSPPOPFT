@@ -33,5 +33,6 @@ export class officerbmi {
 
     @OneToOne(() => officerprofile, (officer: officerprofile) => officer.officerbmi)
     @JoinColumn({ name: 'officer_profile_id' })
+    
     officerprofile: officerprofile;
 }
