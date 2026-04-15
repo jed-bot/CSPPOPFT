@@ -57,6 +57,7 @@ export class OfficerProfileService{
             month_taken: createDto.month_taken,
         })
 
+        
         await this.officerBmiRepository.save(createbmi)
 
         return{

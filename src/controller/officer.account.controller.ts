@@ -10,7 +10,7 @@ import { DeleteOfficerProfileDto } from 'src/officer_profile_dto/delete.officer.
 import { DeleteOfficerAccountDto } from 'src/officer_account_dto/delete.officer.account.dto';
 import { UpdateOfficerAccountInfoDto } from 'src/officer_account_dto/update.officer.account.info';
 import { ForgotOfficerAccountDto } from 'src/officer_account_dto/forgot.officer.account';
-import { CreateOfficerBmiDto } from 'src/officer_bmi_dto/create.officer.bmi.dto';
+import { CreateOfficerBmiDto,createofficerbmibyother } from 'src/officer_bmi_dto/create.officer.bmi.dto';
 import { OfficerProfileService } from 'src/service/officer.profile.service';
 import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
 import { CreateOfficer1minPushupDto } from 'src/officer1min_push_dto/create.1min.psuhup.dto';
@@ -81,6 +81,12 @@ export class OfficerAccountController{
     @Post('/create_bmi')
     async createOfficerBmi(@Request()req,@Body()createdOfficerBmiDto:CreateOfficerBmiDto){
         return this.officerProfileService.createOfficerbmi(createdOfficerBmiDto,req.user.sub,req.user)
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('/create_other_bmi')
+    async createotheofficerbmi(@Request()req,@Body()createDto:createofficerbmibyother,){
+        return this.officerProfileService.createofficerbmibyother(createDto,req.user)
     }
 
     @UseGuards(AuthGuard('jwt'))

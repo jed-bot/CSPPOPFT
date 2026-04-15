@@ -1,14 +1,21 @@
 import {Controller,Get,Post,Body,UseGuards,Put,Request,Param, Delete} from '@nestjs/common';
 import { OfficerAccountService } from 'src/service/officer.account.service';
 import { AuthGuard } from '@nestjs/passport';
-import { Create300mTestDto } from 'src/300m_test_dto/create.300m.test.dto';
+import { Create300mTestDto,createofficersprinttestbyother } from 'src/300m_test_dto/create.300m.test.dto';
 import { OfficerSprintTestService } from '../service/sprinttest.service';
 import { Update300mTestDto } from 'src/300m_test_dto/update.300m.test.dto';
+import { createofficerbmibyother } from 'src/officer_bmi_dto/create.officer.bmi.dto';
 @Controller('auth/officer')
 export class OfficerSprintTestController{
     constructor(
         private readonly OfficerSprintTestService: OfficerSprintTestService
     ){}
+
+    @UseGuards(AuthGuard('jwt'))
+    @Post('/create_sprint_byother')
+    async createofficersprintbyother(@Request ()req,@Body() createDto:createofficersprinttestbyother){
+        return this.OfficerSprintTestService.createofficersprinttestbyother(createDto,req.user)
+    }
 
     @UseGuards(AuthGuard('jwt'))
     @Post('/create_sprint')

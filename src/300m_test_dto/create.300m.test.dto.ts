@@ -11,5 +11,6 @@ export class createofficersprinttestbyother{
     minutes: number;
     seconds: number;
     test_date: string;
+    gender:string;
     age: number;
 }

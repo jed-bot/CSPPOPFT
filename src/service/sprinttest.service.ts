@@ -24,7 +24,7 @@ export class OfficerSprintTestService{
             throw new UnauthorizedException('Unauthorized')
         }
 
-        const profile = await this.officerSprintTestRepository.findOne({
+        const profile = await this.officeFileRepository.findOne({
             where:{id:createDto.officer_id}
         })
 
@@ -37,6 +37,7 @@ export class OfficerSprintTestService{
             age:createDto.age,
             minutes:createDto.minutes,
             seconds:createDto.seconds,
+            gender:createDto.gender,
             test_date:createDto.test_date,
         })
 
