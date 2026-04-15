@@ -15,7 +15,7 @@ export class CreateOfficerBmiDto{
 }
 
 export class createofficerbmibyother{
-  offucer_profile_id:number;
+  officer_profile_id:number;
   height_meter: number;
   weight_kg: number;
    month_taken:string;
