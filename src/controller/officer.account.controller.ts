@@ -122,8 +122,7 @@ export class OfficerAccountController{
     @UseGuards(AuthGuard('jwt'))
     @Put('/update_officer_pushup_record/:id')  
     async updateOfficerPushupRecord(@Request() req,@Param('id') id: number,@Body() updateOfficer1minPushupDto: UpdateOfficer1minPushupDto) {
-    return this.officerProfileService.updateOfficer1minPushup(
-        id,updateOfficer1minPushupDto,req.user.sub);
+    return this.officerProfileService.updateOfficer1minPushup( id,updateOfficer1minPushupDto,req.user.sub);
     }
     @UseGuards(AuthGuard('jwt'))
     @Delete('/delete_officer_pushup_record/:id')
