@@ -6,6 +6,10 @@ import { ConflictException, Injectable, UnauthorizedException,NotFoundException 
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import { LoginOfficerAccountDto } from "src/officer_account_dto/login.officer.account";
+<<<<<<< HEAD
+=======
+import { CreateOfficerProfileDto } from "src/officer_profile_dto/create.officer.profile.dto";
+>>>>>>> main
 import { officerprofile } from "src/entities/officerprofile.entity";
 import { DeleteOfficerAccountDto } from "src/officer_account_dto/delete.officer.account.dto";
 import { ForgotOfficerAccountDto } from "src/officer_account_dto/forgot.officer.account";
@@ -148,6 +152,57 @@ export class OfficerAccountService{
             message:'Officer account deleted successfully'
         }
     }
+<<<<<<< HEAD
     
+=======
+    async createofficerProfile(createOfficerProfileDto:CreateOfficerProfileDto,officerId:number,user:any):Promise<Partial<officerprofile>>{
+        if(user?.sub !== officerId){
+            throw new UnauthorizedException('Unathorized access');
+        }
+        const ExistingProfile = await this.officerProfileRepository.findOne({
+            where:{officer_account_id:officerId}
+        })
+        if(ExistingProfile){
+            throw new ConflictException('Officer profile already exists');
+        }
+        
+        const newProfile = this.officerProfileRepository.create({
+            officer_account_id:officerId,
+            first_name:createOfficerProfileDto.first_name,
+            middle_name:createOfficerProfileDto.middle_name,
+            last_name:createOfficerProfileDto.last_name,
+            age:createOfficerProfileDto.age,
+            sex:createOfficerProfileDto.sex,
+            birthday:createOfficerProfileDto.birthday,
+            office_unit:createOfficerProfileDto.office_unit,
+        })
+
+        const saveProfile = await this.officerProfileRepository.save(newProfile);
+        return saveProfile;
+        
+        
+    }
+    async deleteOfficerAccount(deleteOfficerProfileDto:DeleteOfficerProfileDto,officerId:number,user:any):Promise<{message:string}>{
+        const {email,password} = deleteOfficerProfileDto;
+        const account = await this.officerAccountRepository.findOne({
+            where:{id:officerId}
+        })
+
+        if(!account){
+            throw new NotFoundException('Officer account not found')
+        }
+        if(!email || !password){
+            throw new NotFoundException('Wrong credentials');
+        }
+        if(user?.sub !== officerId){
+            throw new UnauthorizedException('Unauthorized access');
+        }
+        await this.officerAccountRepository.delete({id:officerId});
+        return {
+            message:'Officer account deleted successfully'
+        }
+    }
+
+>>>>>>> main
    
 }

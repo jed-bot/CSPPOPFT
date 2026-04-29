@@ -10,11 +10,19 @@ import { OfficerAccountService } from "src/service/officer.account.service";
 import { OfficerAccountController } from "src/controller/officer.account.controller";
 import { officeraccount } from "src/entities/officeraccount.entity";
 import { OfficerProfileService } from "src/service/officer.profile.service";
+<<<<<<< HEAD
 import { OfficerProfileController } from "src/controller/officer.profile.contoller";
+=======
+import { OfficerProfileController } from "src/controller/officer.situpcontroller";
+>>>>>>> main
 import { officerprofile } from "src/entities/officerprofile.entity";
 import { officerbmi } from "src/entities/officerbmi.entity";
 import { officer1minpushup } from "src/entities/officer1minpushup.entity";
 import { officersitup1min } from "src/entities/officersitup1min.entity";
+<<<<<<< HEAD
+=======
+import { OfficerPftTestService } from "src/service/officer.situp.test.service";
+>>>>>>> main
 import { OfficerSprintTestService } from "../service/sprinttest.service";
 import { OfficerSprintTestController } from "src/controller/officer.sprint.test.controller";
 import { officer300msprint } from "src/entities/officer300msprint.entity"; 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { InjectRepository } from '@nestjs/typeorm';
 import {Not, Repository, TreeRepository} from 'typeorm';
 import { officeraccount } from "src/entities/officeraccount.entity";
@@ -7,11 +8,24 @@ import { officerprofile } from "src/entities/officerprofile.entity";
 import { UpdateOfficerProfileDto } from "src/officer_profile_dto/update.officer.profile.dto";
 import { DeleteOfficerProfileDto } from "src/officer_profile_dto/delete.officer.profile.dto";
 import { administrator } from "src/entities/administrator.entity";
+=======
+import { ConflictException, Injectable, UnauthorizedException,NotFoundException, Inject } from "@nestjs/common";
+import { administrator } from "src/entities/administrator.entity";
+import { UpdateOfficerProfileDto } from "src/officer_profile_dto/update.officer.profile.dto";
+import { DeleteOfficerProfileDto } from "src/officer_profile_dto/delete.officer.profile.dto";
+import { CreateOfficerProfileDto } from "src/officer_profile_dto/create.officer.profile.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { OfficerAccountController } from "src/controller/officer.account.controller";
+import { officerprofile } from "src/entities/officerprofile.entity";
+import { officeraccount } from "src/entities/officeraccount.entity";
+import {Not, Repository, TreeRepository} from 'typeorm';
+>>>>>>> main
 
 
 @Injectable()
 export class OfficerProfileService{
     constructor(
+<<<<<<< HEAD
         @InjectRepository(officeraccount)
         private readonly officerAccountRepository: Repository<officeraccount>,
 
@@ -23,6 +37,19 @@ export class OfficerProfileService{
     ){}
 
 async getallofficerprofile(user:any):Promise<officerprofile[]>{
+=======
+    @InjectRepository(officeraccount)
+    private readonly officerAccountRepository: Repository<officeraccount>,
+
+    @InjectRepository(officerprofile)
+    private readonly officerProfileRepository:Repository<officerprofile>,
+
+     @InjectRepository(administrator)
+    private readonly adminRepo:Repository<administrator>
+    ){}
+
+ async getallofficerprofile(user:any):Promise<officerprofile[]>{
+>>>>>>> main
       if(user?.sub !== user.id){
         throw new UnauthorizedException('Unauthorized access')
       }
@@ -60,6 +87,7 @@ async getallofficerprofile(user:any):Promise<officerprofile[]>{
       }
       return officerprofile;
   }
+<<<<<<< HEAD
 
   async createofficerProfile(createOfficerProfileDto:CreateOfficerProfileDto,officerId:number,user:any):Promise<Partial<officerprofile>>{
         if(user?.sub !== officerId){
@@ -109,6 +137,9 @@ async getallofficerprofile(user:any):Promise<officerprofile[]>{
         }
     }
     async getOfficerProfile(officerId:number,user:any):Promise<Partial<officerprofile>>{
+=======
+ async getOfficerProfile(officerId:number,user:any):Promise<Partial<officerprofile>>{
+>>>>>>> main
         if(user?.sub !== officerId){
             throw new UnauthorizedException('Unauthorized access');
         }
@@ -203,5 +234,9 @@ async deleteofficerprofile(user:any,officerId:number):Promise<{message:string}>{
       message:'Deleted the profile successfully'
     }
   }
+<<<<<<< HEAD
 
     }
+=======
+}
+>>>>>>> main

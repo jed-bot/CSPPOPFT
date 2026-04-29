@@ -9,8 +9,15 @@ import { JwtStrategy } from "src/auth/jwt.strategy";
 import { officerprofile } from "src/entities/officerprofile.entity";
 import { officerbmi } from "src/entities/officerbmi.entity";
 import { OfficerProfileService } from "src/service/officer.profile.service";
+<<<<<<< HEAD
 import { officer1minpushup } from "src/entities/officer1minpushup.entity";
 import { officersitup1min } from "src/entities/officersitup1min.entity";
+=======
+import { OfficerProfileController } from "src/controller/officer.situpcontroller";
+import { officer1minpushup } from "src/entities/officer1minpushup.entity";
+import { officersitup1min } from "src/entities/officersitup1min.entity";
+import { OfficerPftTestService } from "src/service/officer.situp.test.service";
+>>>>>>> main
 import { officer300msprint } from "src/entities/officer300msprint.entity";
 import { OfficerSprintTestController } from "src/controller/officer.sprint.test.controller";
 import { OfficerSprintTestService } from "../service/sprinttest.service";

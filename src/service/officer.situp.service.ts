@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/co
 import { InjectRepository } from '@nestjs/typeorm';
 import { officerprofile } from 'src/entities/officerprofile.entity';
 import {officersitup1min} from 'src/entities/officersitup1min.entity';
-import { CreateSitUpDto } from 'src/officer_situp_1min/create.officer.1minsitup.dto';
+import { CreateSitUpDto,CreateSitupbyotherDTO} from 'src/officer_situp_1min/create.officer.1minsitup.dto';
 import { Not, Repository } from 'typeorm';
 import { UpdateSitUpDto } from 'src/officer_situp_1min/update.officer.1minsitup.dto';
 import { administrator } from 'src/entities/administrator.entity';
@@ -20,6 +20,36 @@ export class OfficerSitupService{
         @InjectRepository(administrator)
         private readonly AdminRepository:Repository<administrator>,
     ){}
+
+
+    async createofficer1minsitupbyother(createDto:CreateSitupbyotherDTO,accountId:number,user:any):Promise<{message:string}>{
+        const officerAccount = Number(user?.sub)
+
+        if(!officerAccount){
+            throw new UnauthorizedException('Invalid token');
+        }
+        const officerProfile = await this.officerProfileRepository.findOne({
+            where:{officer_account_id:officerAccount}
+        }) 
+
+        if(!officerProfile){
+            throw new NotFoundException('Account not Found');
+        }
+
+        const profileId  = officerProfile.id;
+        const createsitUp = this.officersitupTest.create({
+            officer_id:createDto.officer_id,
+            age:createDto.age,
+            gender:createDto.gender,
+            reps:createDto.reps,
+            test_date:createDto.test_date,
+        }) 
+        await this.officersitupTest.save(createsitUp)
+        return{
+            message:"Created Situpsuccessfully"
+        }
+    }
+
     async createofficer1minstup(createDto:CreateSitUpDto,accountId:number,user:any ):Promise<{message:string}>{
        const officerAccountId = Number(user?.sub);
     

@@ -1,6 +1,7 @@
 import {Controller,Get,Post,Body,UseGuards,Put,Request,Delete,Param, Req} from '@nestjs/common';
 import { CreateOfficer1minPushupDto } from 'src/officer1min_push_dto/create.1min.psuhup.dto';
 import { UpdateOfficer1minPushupDto } from 'src/officer1min_push_dto/update.1min.pushup';
+<<<<<<< HEAD
 import { AuthGuard } from '@nestjs/passport';
 import { OfficerPushUpService } from 'src/service/officer.pushup.service';
 
@@ -31,5 +32,11 @@ export class OfficerPushupController{
     async deleteOfficerPushupRecord(@Request() req, @Param('id') id: number) {
         return this.officerPushupservice.deletepushUp(id, req.user);  // Pass full user object
     }
+=======
+
+
+@Controller('auth/controller')
+export class OfficerPushupController{
+>>>>>>> main
 
 }

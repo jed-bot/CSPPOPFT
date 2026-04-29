@@ -6,6 +6,7 @@ import { CreateOfficerAccountDto } from 'src/officer_account_dto/create.officer.
 import { AuthGuard } from '@nestjs/passport';
 import { officersitup1min} from 'src/entities/officersitup1min.entity';
 import { CreateSitUpDto } from 'src/officer_situp_1min/create.officer.1minsitup.dto';
+<<<<<<< HEAD
 import { OfficerSitupService } from 'src/service/officer.situp.service';
 import { UpdateSitUpDto } from 'src/officer_situp_1min/update.officer.1minsitup.dto';
 @Controller('auth/officer')
@@ -13,28 +14,52 @@ export class OfficerSitupController{
     constructor(
         private readonly officerAccountService: OfficerAccountService,
         private readonly OfficerSitupService: OfficerSitupService,
+=======
+import { OfficerPftTestService } from 'src/service/officer.situp.test.service';
+import { UpdateSitUpDto } from 'src/officer_situp_1min/update.officer.1minsitup.dto';
+@Controller('auth/officer')
+export class OfficerProfileController{
+    constructor(private readonly officerAccountService: OfficerAccountService,
+        private readonly OfficerPftTestService: OfficerPftTestService,
+>>>>>>> main
     ){}
     
     @UseGuards(AuthGuard('jwt'))
     @Post('/create_situp')
     async createOfficerSitup(@Request()req,@Body()createSitUpDto:CreateSitUpDto){
+<<<<<<< HEAD
         return this.OfficerSitupService.createofficer1minstup(createSitUpDto,req.user.sub,req.user);
+=======
+        return this.OfficerPftTestService.createofficer1minstup(createSitUpDto,req.user.sub,req.user);
+>>>>>>> main
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Get('/situp_record')
     async getOfficerSitupRecord(@Request()req){
+<<<<<<< HEAD
         return this.OfficerSitupService.getofficersituprecords(req.user.sub,req.user);
+=======
+        return this.OfficerPftTestService.getofficersituprecords(req.user.sub,req.user);
+>>>>>>> main
     }
     @UseGuards(AuthGuard('jwt'))
     @Put('/update_situp/:id')
     async updateOfficerSitUpRecord(@Request()req,@Param('id') id:number,@Body()updatesitupDto:UpdateSitUpDto){
+<<<<<<< HEAD
         return this.OfficerSitupService.updateOfficersitupRecord(updatesitupDto,id,req.user.sub,req.user)
+=======
+        return this.OfficerPftTestService.updateOfficersitupRecord(updatesitupDto,id,req.user.sub,req.user)
+>>>>>>> main
     }
 
     @UseGuards(AuthGuard('jwt'))
     @Delete('/delete_situp/:id')
     async deleteOfficerSitupRecord(@Request()req,@Param('id') id:number){
+<<<<<<< HEAD
         return this.OfficerSitupService.deletsitUprecord(id,req.user.sub,req.user)
+=======
+        return this.OfficerPftTestService.deletsitUprecord(id,req.user.sub,req.user)
+>>>>>>> main
     }
 }
