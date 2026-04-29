@@ -1,5 +1,5 @@
 import { Module} from "@nestjs/common";
-import { OfficerProfileController } from "src/controller/officer.profile.controller";
+import { OfficerProfileController } from "src/controller/officer.situpcontroller";
 import { OfficerAccountService } from "src/service/officer.account.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { officeraccount } from "src/entities/officeraccount.entity";
@@ -11,7 +11,7 @@ import { OfficerProfileService } from "src/service/officer.profile.service";
 import { officerbmi } from "src/entities/officerbmi.entity";
 import { OfficerAccountController } from "src/controller/officer.account.controller";
 import { officer1minpushup } from "src/entities/officer1minpushup.entity";
-import { OfficerPftTestService } from "src/service/officer.pft.test.service";
+import { OfficerPftTestService } from "src/service/officer.situp.test.service";
 import { officer300msprint } from "src/entities/officer300msprint.entity";
 import { OfficerSprintTestController } from "src/controller/officer.sprint.test.controller";
 import { OfficerSprintTestService } from "../service/sprinttest.service";
