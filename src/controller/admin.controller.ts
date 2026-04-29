@@ -13,7 +13,6 @@ import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto'
 import { OfficerAccountService } from 'src/service/officer.account.service';
 import { OfficerProfileService } from 'src/service/officer.profile.service';
 import { UpdateOfficer1minPushupDto } from 'src/officer1min_push_dto/update.1min.pushup';
-import { OfficerPftTestService } from 'src/service/officer.pft.test.service';
 import { OfficerSprintTestService } from 'src/service/sprinttest.service';
 import { AuroraMysqlConnection } from 'typeorm/driver/aurora-mysql/AuroraMysqlConnection.js';
 import { UpdateSitUpDto } from 'src/officer_situp_1min/update.officer.1minsitup.dto';
@@ -21,6 +20,7 @@ import { Update300mTestDto } from 'src/300m_test_dto/update.300m.test.dto';
 import { OfficerWalkTestService } from 'src/service/walk.test.service';
 import { UpdateOfficerWalkDto } from 'src/walk_test_dto/update.officer.walk.test.dto';
 import { AdminAuthKeyGuard } from 'src/auth/admin.auth.key.guard';
+import { OfficerSitupService } from 'src/service/officer.situp.service';
 
 
 @Controller('auth/admin')
@@ -30,7 +30,7 @@ export class AdminController{
         private readonly adminService: AdminService,
         private readonly OfficerProfileService:OfficerAccountService,
         private readonly OfficerBmiSevice:OfficerProfileService,
-        private readonly OfficerSitUpRepository:OfficerPftTestService,
+        private readonly OfficerSitUpRepository:OfficerSitupService,
         private readonly OfficerSprinttestRepository:OfficerSprintTestService,
         private readonly OfficerwalkRepository:OfficerWalkTestService,
     ){}

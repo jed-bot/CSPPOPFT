@@ -7,13 +7,16 @@ import { Not, Repository } from 'typeorm';
 import { UpdateSitUpDto } from 'src/officer_situp_1min/update.officer.1minsitup.dto';
 import { administrator } from 'src/entities/administrator.entity';
 
+
 @Injectable()
-export class OfficerPftTestService{
+export class OfficerSitupService{
     constructor(
         @InjectRepository(officersitup1min)
         private readonly officersitupTest: Repository<officersitup1min>,
-        @InjectRepository(officerprofile)
+
+         @InjectRepository(officerprofile)
         private readonly officerProfileRepository:Repository<officerprofile>,
+
         @InjectRepository(administrator)
         private readonly AdminRepository:Repository<administrator>,
     ){}
