@@ -25,3 +25,11 @@ export class CreateSitUpDto{
     test_date:string;
 
 }
+
+export class CreateSitupByother{
+    officer_id:number;
+    age:number;
+    gender:string;
+    reps:number;
+    test_date:string;
+}

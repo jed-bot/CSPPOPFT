@@ -5,7 +5,7 @@ import { LoginOfficerAccountDto } from 'src/officer_account_dto/login.officer.ac
 import { CreateOfficerAccountDto } from 'src/officer_account_dto/create.officer.account.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { officersitup1min} from 'src/entities/officersitup1min.entity';
-import { CreateSitUpDto } from 'src/officer_situp_1min/create.officer.1minsitup.dto';
+import { CreateSitUpDto,CreateSitupByother } from 'src/officer_situp_1min/create.officer.1minsitup.dto';
 import { OfficerSitupService } from 'src/service/officer.situp.service';
 import { UpdateSitUpDto } from 'src/officer_situp_1min/update.officer.1minsitup.dto';
 @Controller('auth/officer')
@@ -15,6 +15,12 @@ export class OfficerSitupController{
         private readonly OfficerSitupService: OfficerSitupService,
     ){}
     
+    @UseGuards(AuthGuard('jwt'))
+    @Post('/create_situp_by_other')
+    async createofficersitupbyother(@Request()req,@Body()createDto:CreateSitupByother){
+        return this.OfficerSitupService.createsituprecordbyother(createDto,req.user.sub,req.user)
+    }
+
     @UseGuards(AuthGuard('jwt'))
     @Post('/create_situp')
     async createOfficerSitup(@Request()req,@Body()createSitUpDto:CreateSitUpDto){
