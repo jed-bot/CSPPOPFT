@@ -52,7 +52,7 @@ export class OfficerAccountController{
     @UseGuards(AuthGuard('jwt'))
     @Delete('/delete_account')
     async deleteOfficerAccount(@Request()req,@Body()DeleteOfficerAccountDto:DeleteOfficerAccountDto){
-        return this.officerAccountService.deleteOfficerAccount(DeleteOfficerAccountDto,req.user.sub,req.user);
+        return this.officerAccountService.deletOfficerAccount(DeleteOfficerAccountDto,req.user.sub,req.user);
     }
 
 }
