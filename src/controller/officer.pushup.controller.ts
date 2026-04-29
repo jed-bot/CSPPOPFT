@@ -1,5 +1,5 @@
 import {Controller,Get,Post,Body,UseGuards,Put,Request,Delete,Param, Req} from '@nestjs/common';
-import { CreateOfficer1minPushupDto } from 'src/officer1min_push_dto/create.1min.psuhup.dto';
+import { CreateOfficer1minPushupDto,CreateOfficerPushupDtoByOther } from 'src/officer1min_push_dto/create.1min.psuhup.dto';
 import { UpdateOfficer1minPushupDto } from 'src/officer1min_push_dto/update.1min.pushup';
 import { AuthGuard } from '@nestjs/passport';
 import { OfficerPushUpService } from 'src/service/officer.pushup.service';
@@ -10,7 +10,13 @@ export class OfficerPushupController{
         private readonly officerPushupservice:OfficerPushUpService,
     ){}
 
-     @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'))
+    @Post('/create_pushup_other')
+    async createOfficerpushUprecordbyother(@Request()req,@Body() createDto:CreateOfficerPushupDtoByOther,user:any){
+        return this.officerPushupservice.createOfficerpushupbyother(createDto,req.user.sub,req.user)
+    }
+
+    @UseGuards(AuthGuard('jwt'))
     @Post('/create_pushup_record')
     async createOfficerPushupRecord(@Request()req,@Body()createOfficer1minPushupDto:CreateOfficer1minPushupDto){
         return this.officerPushupservice.createOfficer1minPushup(createOfficer1minPushupDto,req.user.sub,req.user)

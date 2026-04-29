@@ -4,8 +4,7 @@ import {Not, Repository, TreeRepository} from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { ConflictException,NotFoundException} from '@nestjs/common';
 import {officerprofile} from 'src/entities/officerprofile.entity';
-import {OfficerAccountService} from 'src/service/officer.account.service';
-import { CreateOfficer1minPushupDto } from 'src/officer1min_push_dto/create.1min.psuhup.dto';
+import { CreateOfficer1minPushupDto,CreateOfficerPushupDtoByOther } from 'src/officer1min_push_dto/create.1min.psuhup.dto';
 import { officer1minpushup } from 'src/entities/officer1minpushup.entity';
 import { UpdateOfficer1minPushupDto } from 'src/officer1min_push_dto/update.1min.pushup';
 import { administrator } from 'src/entities/administrator.entity';
@@ -22,6 +21,33 @@ export class OfficerPushUpService{
         @InjectRepository(administrator)
         private adminRepository:Repository<administrator>
     ){}
+
+    async createOfficerpushupbyother(createDto:CreateOfficerPushupDtoByOther,accountId:number,user:any):Promise<{message:string}>{
+        if(user?.sub !== accountId){
+            throw new UnauthorizedException('Unauthorized access')
+        }
+
+        const officerProfile = await this.officerProfileRepository.findOne({
+            where:{officer_account_id:accountId}
+        })
+
+        if(!officerProfile){
+            throw new NotFoundException('Officer Account Not Found')
+        }
+
+        const pushUprecord = this.pushUpRepository.create({
+            officer_id:createDto.officer_id,
+            gender: createDto.gender,
+            age: createDto.age,
+            reps: createDto.reps,
+            test_date: createDto.test_date,
+        })
+
+        await this.pushUpRepository.save(pushUprecord)
+        return{
+            message:'Recorded Successfully'
+        }
+    }
 
     async createOfficer1minPushup(createOfficer1minPushupDto: CreateOfficer1minPushupDto,accountId: number, user: any): Promise<{ message: string }> 
     {
