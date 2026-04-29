@@ -10,18 +10,23 @@ import { OfficerAccountService } from "src/service/officer.account.service";
 import { OfficerAccountController } from "src/controller/officer.account.controller";
 import { officeraccount } from "src/entities/officeraccount.entity";
 import { OfficerProfileService } from "src/service/officer.profile.service";
-import { OfficerProfileController } from "src/controller/officer.profile.controller";
+import { OfficerProfileController } from "src/controller/officer.profile.contoller";
 import { officerprofile } from "src/entities/officerprofile.entity";
 import { officerbmi } from "src/entities/officerbmi.entity";
 import { officer1minpushup } from "src/entities/officer1minpushup.entity";
 import { officersitup1min } from "src/entities/officersitup1min.entity";
-import { OfficerPftTestService } from "src/service/officer.pft.test.service";
 import { OfficerSprintTestService } from "../service/sprinttest.service";
 import { OfficerSprintTestController } from "src/controller/officer.sprint.test.controller";
 import { officer300msprint } from "src/entities/officer300msprint.entity"; 
 import { walktest } from "src/entities/officer.walk.test.entity";
 import { OfficerWalkTestService } from "src/service/walk.test.service";
 import { OfficerWalktestController } from "src/controller/officer.walk.test.controller";
+import { OfficerBmiController } from "src/controller/officer.bmi.controller";
+import { OfficerBmiService } from "src/service/officer.bmi.service";
+import { OfficerSitupController } from "src/controller/officer.situpcontroller";
+import { OfficerSitupService } from "src/service/officer.situp.service";
+import { OfficerPushUpService } from "src/service/officer.pushup.service";
+import { OfficerPushupController } from "src/controller/officer.pushup.controller";
 @Module({
 
     imports:[
@@ -48,6 +53,9 @@ import { OfficerWalktestController } from "src/controller/officer.walk.test.cont
         AdminController,
         OfficerAccountController,
         OfficerProfileController,
+        OfficerBmiController,
+        OfficerPushupController,
+        OfficerSitupController,
         OfficerSprintTestController,
         OfficerWalktestController
     ],
@@ -55,7 +63,9 @@ import { OfficerWalktestController } from "src/controller/officer.walk.test.cont
         AdminService,
         OfficerAccountService,
         OfficerProfileService,
-        OfficerPftTestService,
+        OfficerBmiService,
+        OfficerPushUpService,
+        OfficerSitupService,
         OfficerSprintTestService,
         OfficerWalkTestService,
         JwtStrategy

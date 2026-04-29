@@ -10,17 +10,17 @@ import { UpdateOfficerStatus } from 'src/officer_account_dto/update.officer.prof
 import { UpdateAdminInfoDto } from 'src/admin_dto/update.admin.info';
 import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.profile.dto';
 import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
-import { OfficerAccountService } from 'src/service/officer.account.service';
 import { OfficerProfileService } from 'src/service/officer.profile.service';
 import { UpdateOfficer1minPushupDto } from 'src/officer1min_push_dto/update.1min.pushup';
 import { OfficerSprintTestService } from 'src/service/sprinttest.service';
-import { AuroraMysqlConnection } from 'typeorm/driver/aurora-mysql/AuroraMysqlConnection.js';
 import { UpdateSitUpDto } from 'src/officer_situp_1min/update.officer.1minsitup.dto';
 import { Update300mTestDto } from 'src/300m_test_dto/update.300m.test.dto';
 import { OfficerWalkTestService } from 'src/service/walk.test.service';
 import { UpdateOfficerWalkDto } from 'src/walk_test_dto/update.officer.walk.test.dto';
 import { AdminAuthKeyGuard } from 'src/auth/admin.auth.key.guard';
 import { OfficerSitupService } from 'src/service/officer.situp.service';
+import { OfficerBmiService } from 'src/service/officer.bmi.service';
+import { OfficerPushUpService } from 'src/service/officer.pushup.service';
 
 
 @Controller('auth/admin')
@@ -28,9 +28,10 @@ export class AdminController{
 
     constructor(
         private readonly adminService: AdminService,
-        private readonly OfficerProfileService:OfficerAccountService,
-        private readonly OfficerBmiSevice:OfficerProfileService,
+        private readonly OfficerProfileService:OfficerProfileService,
+        private readonly OfficerBmiSevice:OfficerBmiService,
         private readonly OfficerSitUpRepository:OfficerSitupService,
+        private readonly OfficerPushupService:OfficerPushUpService,
         private readonly OfficerSprinttestRepository:OfficerSprintTestService,
         private readonly OfficerwalkRepository:OfficerWalkTestService,
     ){}
@@ -154,25 +155,25 @@ export class AdminController{
         @UseGuards(AuthGuard('jwt'))
         @Get ('/officer/pushuprecord')
         async getallofficerpushuprecord(@Request()req){
-              return this.OfficerBmiSevice.getallpushuprecord(req.user.sub,req.user);
+              return this.OfficerPushupService.getallpushuprecord(req.user.sub,req.user);
         }
 
         @UseGuards(AuthGuard('jwt'))
         @Get('/officer/pushuprecord/:id')
         async getofficerpushuprecord(@Request()req,@Param('id') id:number){
-            return this.OfficerBmiSevice.getofficerpushrecordbyid(req.user.sub,id,req.user)
+            return this.OfficerPushupService.getofficerpushrecordbyid(req.user.sub,id,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
         @Put ('/officer/update/pushuprecord/:id')
         async updateofficerpushuprecrd(@Request()req,@Param('id') id:number,@Body() updatedto:UpdateOfficer1minPushupDto){
-            return this.OfficerBmiSevice.adminupdatepushup(req.user.sub,id,updatedto,req.user)
+            return this.OfficerPushupService.adminupdatepushup(req.user.sub,id,updatedto,req.user)
         }
 
         @UseGuards(AuthGuard('jwt'))
         @Delete('/officer/delete/pushuprecord/:id')
         async deleteofficerpushuprecord(@Request()req,@Param('id')id:number){
-            return this.OfficerBmiSevice.deletepushupbyadmin(req.user.sub,id,req.user)
+            return this.OfficerPushupService.deletepushupbyadmin(req.user.sub,id,req.user)
         }
 
 
