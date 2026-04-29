@@ -6,16 +6,10 @@ import { ConflictException, Injectable, UnauthorizedException,NotFoundException 
 import * as bcrypt from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import { LoginOfficerAccountDto } from "src/officer_account_dto/login.officer.account";
-import { NotFoundError } from "rxjs";
-import { CreateOfficerProfileDto } from "src/officer_profile_dto/create.officer.profile.dto";
 import { officerprofile } from "src/entities/officerprofile.entity";
-import { UpdateOfficerProfileDto } from "src/officer_profile_dto/update.officer.profile.dto";
-import { DeleteOfficerProfileDto } from "src/officer_profile_dto/delete.officer.profile.dto";
 import { DeleteOfficerAccountDto } from "src/officer_account_dto/delete.officer.account.dto";
 import { ForgotOfficerAccountDto } from "src/officer_account_dto/forgot.officer.account";
 import { UpdateOfficerAccountInfoDto } from "src/officer_account_dto/update.officer.account.info";
-import { IsEmail } from "class-validator";
-import { CreateOfficerBmiDto } from "src/officer_bmi_dto/create.officer.bmi.dto";
 import { administrator } from "src/entities/administrator.entity";
 
 @Injectable()
