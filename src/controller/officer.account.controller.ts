@@ -86,7 +86,8 @@ export class OfficerAccountController{
     @UseGuards(AuthGuard('jwt'))
     @Post('/create_other_bmi')
     async createotheofficerbmi(@Request()req,@Body()createDto:createofficerbmibyother,){
-        return this.officerProfileService.createofficerbmibyother(createDto,req.user)
+        return this.officerProfileService.
+        createofficerbmibyother(createDto,req.user)
     }
 
     @UseGuards(AuthGuard('jwt'))
