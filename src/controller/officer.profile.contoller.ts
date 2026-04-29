@@ -1,0 +1,12 @@
+import {Controller,Get,Post,Body,UseGuards,Put,Request,Delete,Param, Req} from '@nestjs/common';
+import { OfficerAccountModule} from 'src/modules/officer.account.module';
+import { OfficerAccountService } from 'src/service/officer.account.service';
+import { LoginOfficerAccountDto } from 'src/officer_account_dto/login.officer.account';
+import { CreateOfficerAccountDto } from 'src/officer_account_dto/create.officer.account.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { CreateOfficerProfileDto } from 'src/officer_profile_dto/create.officer.profile.dto';
+import { UpdateOfficerProfileDto } from 'src/officer_profile_dto/update.officer.profile.dto';
+import { DeleteOfficerProfileDto } from 'src/officer_profile_dto/delete.officer.profile.dto';
+import { CreateOfficerBmiDto,createofficerbmibyother } from 'src/officer_bmi_dto/create.officer.bmi.dto';
+import { OfficerProfileService } from 'src/service/officer.profile.service';
+import { UpdateOfficerBmiDto } from 'src/officer_bmi_dto/update.officer.bmi.dto';
