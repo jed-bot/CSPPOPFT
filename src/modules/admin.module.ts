@@ -27,6 +27,9 @@ import { OfficerSitupController } from "src/controller/officer.situpcontroller";
 import { OfficerSitupService } from "src/service/officer.situp.service";
 import { OfficerPushUpService } from "src/service/officer.pushup.service";
 import { OfficerPushupController } from "src/controller/officer.pushup.controller";
+import { OfficerSummaryService } from "src/service/officer.summary.service";
+import { OfficerPerformanceSummary } from "src/entities/officer.grade.summary.entity";
+import { OfficerSummaryController } from "src/controller/admin.grade.summary.controller";
 @Module({
 
     imports:[
@@ -39,7 +42,8 @@ import { OfficerPushupController } from "src/controller/officer.pushup.controlle
             officer1minpushup,
             officersitup1min,
             officer300msprint,
-            walktest]),
+            walktest,
+            OfficerPerformanceSummary]),
         JwtModule.registerAsync({  // ← Change to registerAsync
             imports: [ConfigModule],
             inject: [ConfigService],
@@ -57,7 +61,8 @@ import { OfficerPushupController } from "src/controller/officer.pushup.controlle
         OfficerPushupController,
         OfficerSitupController,
         OfficerSprintTestController,
-        OfficerWalktestController
+        OfficerWalktestController,
+        OfficerSummaryController
     ],
     providers:[
         AdminService,
@@ -68,7 +73,8 @@ import { OfficerPushupController } from "src/controller/officer.pushup.controlle
         OfficerSitupService,
         OfficerSprintTestService,
         OfficerWalkTestService,
-        JwtStrategy
+        JwtStrategy,
+        OfficerSummaryService
     ],
 })
 

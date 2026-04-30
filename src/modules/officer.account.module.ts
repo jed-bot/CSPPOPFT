@@ -25,12 +25,12 @@ import { OfficerSitupController } from "src/controller/officer.situpcontroller";
 import { OfficerSitupService } from "src/service/officer.situp.service";
 import { OfficerPushUpService} from "src/service/officer.pushup.service";
 import { OfficerPushupController } from "src/controller/officer.pushup.controller";
-
+import { OfficerPerformanceSummary } from "src/entities/officer.grade.summary.entity";
 @Module({
     imports:[
 
         ConfigModule.forRoot({isGlobal:true}),
-        TypeOrmModule.forFeature([administrator,officeraccount,officerprofile,officerbmi,officer1minpushup,officersitup1min,officer300msprint,walktest]),
+        TypeOrmModule.forFeature([administrator,officeraccount,officerprofile,officerbmi,officer1minpushup,officersitup1min,officer300msprint,walktest,OfficerPerformanceSummary]),
         JwtModule.register({
             secret:process.env.JWT_SECRET,
             signOptions:{expiresIn:'1h'},
