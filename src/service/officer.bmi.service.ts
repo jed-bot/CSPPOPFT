@@ -55,7 +55,7 @@ export class OfficerBmiService{
         where: { officer_account_id: accountId }
     });
     if (!profile) {
-        throw new NotFoundException(`Profile not found for account ID ${accountId}. Please create a profile first.`);
+        throw new NotFoundException('Please create a profile first');
     }
     const profileId = profile.id;
     const createBmi = this.officerBmiRepository.create({

@@ -2,7 +2,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {Not, Repository, TreeRepository} from 'typeorm';
 import { officeraccount } from "src/entities/officeraccount.entity";
 import { ConflictException, Injectable, UnauthorizedException,NotFoundException } from "@nestjs/common";
-import { CreateOfficerProfileDto } from "src/officer_profile_dto/create.officer.profile.dto";
+import { CreateOfficerProfileDto,CreateOfficerProfileByOther } from "src/officer_profile_dto/create.officer.profile.dto";
 import { officerprofile } from "src/entities/officerprofile.entity";
 import { UpdateOfficerProfileDto } from "src/officer_profile_dto/update.officer.profile.dto";
 import { DeleteOfficerProfileDto } from "src/officer_profile_dto/delete.officer.profile.dto";
@@ -204,4 +204,34 @@ async deleteofficerprofile(user:any,officerId:number):Promise<{message:string}>{
     }
   }
 
+  async createprofilebyother(createDto:CreateOfficerProfileByOther,accountId:number,user:any):Promise<{message:string}>{
+    if(user?.sub !==accountId){
+        throw new UnauthorizedException('Unauthorized Access')
     }
+
+    const officerprofile = await this.officerProfileRepository.findOne({
+        where:{id:accountId}
+    })
+    if(!officerprofile){
+        throw new NotFoundException('Officer profile not found')
+    }
+
+    const record = await this.officerProfileRepository.create({
+        officer_account_id:createDto.officer_account_id,
+        first_name:createDto.first_name,
+        last_name:createDto.last_name,
+        middle_name:createDto.middle_name,
+        age:createDto.age,
+        sex:createDto.sex,
+        birthday:createDto.birthday,
+        office_unit:createDto.office_unit
+    })
+
+    await this.officerProfileRepository.save(record)
+
+    return{
+        message:'Created Successfully'
+    }
+  }
+
+}
